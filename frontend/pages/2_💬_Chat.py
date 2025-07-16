@@ -134,7 +134,7 @@ if st.session_state.sidebar_visible:
             "Similarity Threshold",
             min_value=0.0,
             max_value=1.0,
-            value=0.8,
+            value=0.3,
             step=0.1,
             help="Minimum similarity score for chunk retrieval"
         )

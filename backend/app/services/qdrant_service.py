@@ -107,7 +107,7 @@ class QdrantService:
         self, 
         query_embedding: List[float], 
         limit: int = 5,
-        score_threshold: float = 0.7
+        score_threshold: float = 0.3
     ) -> List[Dict[str, Any]]:
         """Search for similar chunks"""
         try:

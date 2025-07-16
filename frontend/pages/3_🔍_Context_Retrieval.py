@@ -76,7 +76,7 @@ with col2:
         "Similarity threshold:",
         min_value=0.0,
         max_value=1.0,
-        value=0.7,
+        value=0.3,
         step=0.05,
         help="Minimum similarity score for retrieved chunks"
     )
