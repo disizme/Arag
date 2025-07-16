@@ -5,10 +5,15 @@ An intelligent document query system with adaptive retrieval capabilities, built
 ## Features
 
 - **Document Upload**: Support for PDF, DOCX, PPTX, and 15+ other formats via Kreuzberg
-- **Advanced Text Chunking**: Three chunking methods available:
+- **Advanced Text Chunking**: Three chunking methods available with overlap support:
   - **Recursive** (Default): Sentence-aware chunking that preserves sentence boundaries
   - **Semantic spaCy**: NLP-based chunking with entity recognition
   - **Semantic LangChain**: Advanced semantic chunking with embeddings
+- **Multi-Step Reasoning**: Advanced query processing for complex questions:
+  - **Query Decomposition**: Breaks complex queries into sub-questions
+  - **Step-by-Step Analysis**: Retrieves context for each reasoning step
+  - **Knowledge Accumulation**: Builds reasoning chain across steps
+  - **Comprehensive Synthesis**: Integrates all steps into final answer
 - **Unified Document Processing**: Kreuzberg library for robust text extraction
 - **Entity Extraction** (Optional): Advanced entity recognition and keyword extraction
 - **Vector Search**: Fast similarity search using Qdrant vector database
@@ -28,10 +33,12 @@ An intelligent document query system with adaptive retrieval capabilities, built
 ### Processing Pipeline
 1. Document Upload → Multi-format file processing
 2. Text Extraction → Kreuzberg unified extraction with OCR fallback
-3. Intelligent Chunking → Choice of recursive, semantic, or LangChain methods
+3. Intelligent Chunking → Choice of recursive, semantic, or LangChain methods with overlap
 4. Embedding Generation → Ollama vector creation
 5. Vector Storage → Qdrant indexing with metadata
-6. Query Processing → Similarity search + LLM response generation
+6. Query Processing → Two modes available:
+   - **Standard Mode**: Direct similarity search + LLM response generation
+   - **Multi-Step Mode**: Query decomposition → step-by-step reasoning → synthesis
 
 ### Optional Features
 - **Entity Extraction Service**: Advanced NLP processing for:
@@ -91,7 +98,7 @@ cp .env.example .env
 1. Install Ollama from https://ollama.ai
 2. Pull required models:
 ```bash
-ollama pull mxbai-embed-large:latest
+ollama pull snowflake-arctic-embed2:latest
 ollama pull llama2
 ```
 
@@ -137,7 +144,10 @@ python run_frontend.py
 1. Go to the Chat page
 2. Select your preferred model
 3. Adjust retrieval settings if needed
-4. Ask questions about your uploaded documents
+4. Choose reasoning mode:
+   - **Standard Mode**: Quick responses for simple queries
+   - **Multi-Step Mode**: Complex reasoning for analytical questions
+5. Ask questions about your uploaded documents
 
 ### Optional Entity Extraction Service
 
@@ -166,10 +176,60 @@ metadata = extractor.extract_metadata_only("/path/to/document.pdf")
 ## API Endpoints
 
 - `POST /api/v1/upload` - Upload and process documents
-- `POST /api/v1/query` - Query the document database
+- `POST /api/v1/query` - Query the document database (supports multi-step reasoning)
 - `GET /api/v1/health` - Check system health
 - `GET /api/v1/models` - List available models
 - `GET /api/v1/collection/info` - Get collection information
+
+### Query API Usage
+
+#### Standard Query
+```json
+{
+  "query": "What is machine learning?",
+  "model_name": "llama2",
+  "max_chunks": 5,
+  "similarity_threshold": 0.7,
+  "use_multi_step_reasoning": false
+}
+```
+
+#### Multi-Step Reasoning Query
+```json
+{
+  "query": "How do neural networks learn and what are the key optimization techniques used in deep learning?",
+  "model_name": "llama2",
+  "max_chunks": 5,
+  "similarity_threshold": 0.7,
+  "use_multi_step_reasoning": true
+}
+```
+
+#### Multi-Step Response Format
+```json
+{
+  "query": "...",
+  "answer": "Comprehensive synthesized answer",
+  "relevant_chunks": [...],
+  "model_used": "llama2",
+  "processing_time": 15.2,
+  "reasoning_steps": [
+    {
+      "step_number": 1,
+      "sub_question": "How do neural networks learn?",
+      "context_used": "Retrieved context for this step",
+      "step_answer": "Step-specific answer"
+    },
+    {
+      "step_number": 2,
+      "sub_question": "What are key optimization techniques?",
+      "context_used": "Retrieved context for this step",
+      "step_answer": "Step-specific answer"
+    }
+  ],
+  "num_steps": 2
+}
+```
 
 ## Development
 
@@ -184,7 +244,7 @@ arag/
 │       │   ├── document_processor.py    # Kreuzberg-based document processing
 │       │   ├── chunking_service.py      # Text chunking methods
 │       │   ├── entity_extractor.py      # Optional entity extraction
-│       │   ├── ollama_service.py        # LLM integration
+│       │   ├── ollama_service.py        # LLM integration with multi-step reasoning
 │       │   └── qdrant_service.py        # Vector database
 │       └── main.py       # FastAPI app
 ├── frontend/
@@ -241,6 +301,18 @@ Key configuration options in `.env`:
    - Check if Kreuzberg entity extraction features are enabled
 
 ### New Features (Latest Update)
+
+#### Multi-Step Reasoning System
+- **Query Decomposition**: Automatically breaks complex queries into manageable sub-questions
+- **Contextual Retrieval**: Retrieves relevant context for each reasoning step
+- **Knowledge Accumulation**: Previous steps inform subsequent reasoning
+- **Comprehensive Synthesis**: Integrates all steps into a coherent final answer
+- **Detailed Tracing**: Full visibility into the reasoning process
+
+#### Enhanced Chunking with Overlap
+- **Chunk Overlap**: Configurable overlap between chunks for better context continuity
+- **Sentence Boundary Preservation**: Maintains semantic coherence in recursive chunking
+- **Adaptive Overlap**: Smart overlap calculation based on sentence boundaries
 
 #### Document Processing Improvements
 - **Kreuzberg Integration**: Replaced multiple document processing libraries with unified Kreuzberg solution

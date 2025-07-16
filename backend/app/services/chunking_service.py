@@ -1,7 +1,7 @@
 import spacy
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_experimental.text_splitter import SemanticChunker
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from typing import List, Tuple, Union
 from shared.models.schemas import ChunkingMethod, DocumentChunk
 from backend.app.core.config import settings
@@ -42,7 +42,7 @@ class ChunkingService:
             chunk_size=settings.CHUNK_SIZE,
             chunk_overlap=settings.CHUNK_OVERLAP,
             length_function=len,
-            separators=["\n\n", "\n", " ", ""]
+            separators=["\n\n", "\n", "."]
         )
     
     def chunk_with_recursive(self, text: str) -> List[str]:
@@ -57,6 +57,7 @@ class ChunkingService:
         - Preserves sentence boundaries (never breaks sentences)
         - Respects chunk size limits
         - Maintains reading flow and coherence
+        - Includes overlap between chunks for better context continuity
         - Falls back gracefully if spaCy is unavailable
         """
         if not self.spacy_model:
@@ -75,27 +76,31 @@ class ChunkingService:
             chunks = []
             current_chunk_sentences = []
             current_chunk_length = 0
+            overlap_sentences = []  # Store sentences for overlap
             
             for sentence in sentences:
                 sentence_length = len(sentence)
                 
                 # Check if adding this sentence would exceed chunk size
                 # We add +1 for the space between sentences
-                potential_length = current_chunk_length + sentence_length + (1 if current_chunk_sentences else 0)
+                potential_length = current_chunk_length + sentence_length + (1 if current_chunk_sentences else 0) 
                 
                 if potential_length <= settings.CHUNK_SIZE:
                     # Add sentence to current chunk
                     current_chunk_sentences.append(sentence)
                     current_chunk_length = potential_length
+                    
                 else:
                     # Finalize current chunk if it has content
                     if current_chunk_sentences:
                         chunks.append(" ".join(current_chunk_sentences))
+                        
+                        # Prepare overlap for next chunk
+                        overlap_sentences = self._get_overlap_sentences(current_chunk_sentences)
                     
-                    # Start new chunk with current sentence
-                    # If a single sentence is too long, we still include it to avoid data loss
-                    current_chunk_sentences = [sentence]
-                    current_chunk_length = sentence_length
+                    # Start new chunk with overlap + current sentence
+                    current_chunk_sentences = overlap_sentences + [sentence]
+                    current_chunk_length = sum(len(s) for s in current_chunk_sentences) + len(current_chunk_sentences) - 1
             
             # Add the final chunk if it has content
             if current_chunk_sentences:
@@ -108,7 +113,7 @@ class ChunkingService:
             return self._fallback_chunk(text)
     
     def chunk_with_spacy(self, text: str) -> List[str]:
-        """Semantic chunking using spaCy NLP pipeline"""
+        """Semantic chunking using spaCy NLP pipeline with overlap"""
         if not self.spacy_model:
             return self._fallback_chunk(text)
         
@@ -131,6 +136,7 @@ class ChunkingService:
             current_chunk = []
             current_entities = set()
             current_length = 0
+            overlap_sentences = []  # Store sentences for overlap
             
             for sent_info in sentences:
                 sent_text = sent_info['text']
@@ -148,9 +154,14 @@ class ChunkingService:
                     # Finalize current chunk
                     if current_chunk:
                         chunks.append(" ".join(current_chunk))
-                    current_chunk = [sent_text]
+                        
+                        # Prepare overlap for next chunk
+                        overlap_sentences = self._get_overlap_sentences(current_chunk)
+                    
+                    # Start new chunk with overlap + current sentence
+                    current_chunk = overlap_sentences + [sent_text]
                     current_entities = sent_entities
-                    current_length = len(sent_text)
+                    current_length = sum(len(s) for s in current_chunk)
                 else:
                     # Add to current chunk
                     current_chunk.append(sent_text)
@@ -193,6 +204,27 @@ class ChunkingService:
             print(f"Error in fallback chunking: {e}")
             return self._simple_chunk(text)
     
+    def _get_overlap_sentences(self, sentences: List[str]) -> List[str]:
+        """Get sentences for overlap based on CHUNK_OVERLAP setting"""
+        if not sentences or settings.CHUNK_OVERLAP <= 0:
+            return []
+        
+        overlap_sentences = []
+        current_overlap_length = 0
+        
+        # Take sentences from the end working backwards
+        for sentence in reversed(sentences):
+            sentence_length = len(sentence)
+            
+            # Check if adding this sentence would exceed overlap limit
+            if current_overlap_length + sentence_length + (1 if overlap_sentences else 0) <= settings.CHUNK_OVERLAP:
+                overlap_sentences.insert(0, sentence)  # Insert at beginning to maintain order
+                current_overlap_length += sentence_length + (1 if len(overlap_sentences) > 1 else 0)
+            else:
+                break
+        
+        return overlap_sentences
+    
     def _simple_chunk(self, text: str) -> List[str]:
         """Simple word-based chunking method as last resort"""
         words = text.split()
@@ -217,7 +249,7 @@ class ChunkingService:
     
     def apply_chunking(
         self, 
-        chunks: List[DocumentChunk], 
+        chunk: DocumentChunk, 
         method: Union[str, ChunkingMethod] = ChunkingMethod.RECURSIVE
     ) -> List[DocumentChunk]:
         """Apply chunking to document chunks using the specified method"""
@@ -226,43 +258,33 @@ class ChunkingService:
         # Convert string to enum if needed
         if isinstance(method, str):
             if method.lower() == "recursive":
-                method_enum = ChunkingMethod.RECURSIVE
-            elif method.lower() == "spacy":
-                method_enum = ChunkingMethod.SPACY
-            elif method.lower() == "langchain":
-                method_enum = ChunkingMethod.LANGCHAIN
-            else:
-                method_enum = ChunkingMethod.RECURSIVE  # Default fallback
-        else:
-            method_enum = method
-        
-        for chunk in chunks:
-            if method_enum == ChunkingMethod.RECURSIVE:
                 text_chunks = self.chunk_with_recursive(chunk.content)
-            elif method_enum == ChunkingMethod.SPACY:
+            elif method.lower() == "spacy":
                 text_chunks = self.chunk_with_spacy(chunk.content)
-            elif method_enum == ChunkingMethod.LANGCHAIN:
+            elif method.lower() == "langchain":
                 text_chunks = self.chunk_with_langchain(chunk.content)
             else:
-                text_chunks = [chunk.content]
+                text_chunks = self._fallback_chunk(chunk.content)
+        else:
+            text_chunks = self._fallback_chunk(chunk.content)
             
-            # Create new chunks from the refined text chunks
-            for i, text_chunk in enumerate(text_chunks):
-                if text_chunk.strip():
-                    refined_chunk = DocumentChunk(
-                        id=f"{chunk.id}_{i}",
-                        content=text_chunk.strip(),
-                        metadata={
-                            **chunk.metadata,
-                            "parent_chunk_id": chunk.id,
-                            "semantic_chunk_index": i
-                        },
-                        source_file=chunk.source_file,
-                        page_number=chunk.page_number,
-                        chunk_index=chunk.chunk_index * 1000 + i,  # Maintain order
-                        created_at=chunk.created_at
-                    )
-                    refined_chunks.append(refined_chunk)
+        # Create new chunks from the refined text chunks
+        for i, text_chunk in enumerate(text_chunks):
+            if text_chunk.strip():
+                refined_chunk = DocumentChunk(
+                    id=f"{chunk.id}_{i}",
+                    content=text_chunk.strip(),
+                    metadata={
+                        **chunk.metadata,
+                        "parent_chunk_id": chunk.id,
+                        "semantic_chunk_index": i
+                    },
+                    source_file=chunk.source_file,
+                    page_number=chunk.page_number,
+                    chunk_index=chunk.chunk_index * 1000 + i,  # Maintain order
+                    created_at=chunk.created_at
+                )
+                refined_chunks.append(refined_chunk)
         
         return refined_chunks
 

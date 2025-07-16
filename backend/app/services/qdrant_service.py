@@ -23,7 +23,7 @@ class QdrantService:
             if self.collection_name not in collection_names:
                 self.client.create_collection(
                     collection_name=self.collection_name,
-                    vectors_config=VectorParams(
+                    vectors_config=VectorParams(        #according to embedding model training
                         size=settings.QDRANT_VECTOR_SIZE,
                         distance=Distance.COSINE
                     )

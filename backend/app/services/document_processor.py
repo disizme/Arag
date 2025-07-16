@@ -4,10 +4,10 @@
 # from pptx import Presentation
 
 # New Kreuzberg import for unified document processing
-from kreuzberg import extract_file_sync
+from kreuzberg import extract_file
 from kreuzberg.exceptions import KreuzbergError
 
-from typing import List, Dict, Any, Tuple, Union
+from typing import List, Union
 import os
 import hashlib
 from datetime import datetime
@@ -87,7 +87,7 @@ class DocumentProcessor:
     #     else:
     #         raise ValueError(f"Unsupported document type: {document_type}")
     
-    def extract_text_with_kreuzberg(self, file_path: str) -> List[Tuple[str, int]]:
+    async def extract_text_with_kreuzberg(self, file_path: str) -> str:
         """Extract text from any supported document using Kreuzberg library
         
         Kreuzberg provides unified text extraction for multiple document formats:
@@ -98,78 +98,71 @@ class DocumentProcessor:
         - And many more formats
         
         Returns:
-            List[Tuple[str, int]]: List of (text_content, page_number) tuples
+            str: The extracted text content
         """
         try:
-            # Use Kreuzberg's synchronous extraction
-            result = extract_file_sync(file_path)
+            # Use Kreuzberg's async extraction
+            result = await extract_file(file_path)
             
-            # Extract content and metadata
+            # Extract content
             content = result.content
-            metadata = result.metadata if hasattr(result, 'metadata') else None
             
-            # For now, treat the entire document as a single page
-            # Future enhancement: implement page-level extraction if Kreuzberg supports it
-            if content and content.strip():
-                return [(content, 1)]
-            else:
-                return []
+            # Return the entire content as a single string
+            return content.strip() if content else ""
                 
         except KreuzbergError as e:
             raise Exception(f"Kreuzberg extraction failed for {file_path}: {str(e)}")
         except Exception as e:
             raise Exception(f"Unexpected error during Kreuzberg extraction: {str(e)}")
     
-    def create_document_chunks(
+    def create_initial_document_chunk(
         self, 
         file_path: str, 
         filename: str, 
-        pages: List[Tuple[str, int]],
-        chunking_method: Union[str, ChunkingMethod] = ChunkingMethod.RECURSIVE
-    ) -> List[DocumentChunk]:
-        """Create document chunks from extracted text"""
-        chunks = []
+        content: str # List[Tuple[str, int]] ; Individual Page extractions
+    ) -> DocumentChunk:
+        """Create initial document chunk from extracted text"""
         document_id = hashlib.md5(f"{filename}_{os.path.getmtime(file_path)}".encode()).hexdigest()
         
-        # Handle both string and enum inputs
-        if isinstance(chunking_method, str):
-            chunking_method_str = chunking_method
-        else:
-            chunking_method_str = chunking_method.value
+        chunk = DocumentChunk(
+            id=f"{document_id}_0",
+            content=content,
+            metadata={
+                "filename": filename,
+                "document_id": document_id,
+                "file_size": os.path.getsize(file_path),
+                "document_type": self.get_document_type(filename).value,
+                "extraction_method": "kreuzberg"
+            },
+            source_file=filename,
+            page_number=1,
+            chunk_index=0,
+            created_at=datetime.now()
+        )
         
-        for chunk_index, (text, page_num) in enumerate(pages):
-            chunk = DocumentChunk(
-                id=f"{document_id}_{chunk_index}",
-                content=text,
-                metadata={
-                    "filename": filename,
-                    "document_id": document_id,
-                    "chunking_method": chunking_method_str,
-                    "file_size": os.path.getsize(file_path)
-                },
-                source_file=filename,
-                page_number=page_num,
-                chunk_index=chunk_index,
-                created_at=datetime.now()
-            )
-            chunks.append(chunk)
-        
-        return chunks
+        return chunk
     
+
     async def process_document(
         self, 
         file_path: str, 
         filename: str, 
         chunking_method: Union[str, ChunkingMethod] = ChunkingMethod.RECURSIVE
-    ) -> List[DocumentChunk]:
-        """Process a document and return chunks using Kreuzberg for text extraction"""
+    ) -> DocumentChunk:
+        """Process a document and return semantic chunks (for testing/standalone use)"""
         try:
-            # Use Kreuzberg for unified text extraction instead of type-specific methods
-            pages = self.extract_text_with_kreuzberg(file_path)
-            chunks = self.create_document_chunks(file_path, filename, pages, chunking_method)
+            # Step 1: Extract text using Kreuzberg
+            content = await self.extract_text_with_kreuzberg(file_path)
+            
+            if not content:
+                raise Exception("No content extracted from document")
+            
+            # Step 2: Create initial document chunk
+            chunks = self.create_initial_document_chunk(file_path, filename, content)
             
             return chunks
         except Exception as e:
             raise Exception(f"Failed to process document {filename}: {str(e)}")
 
+# Global instance
 document_processor = DocumentProcessor()

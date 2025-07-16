@@ -7,6 +7,7 @@ class ChunkingMethod(str, Enum):
     RECURSIVE = "recursive"  # Default - sentence-aware recursive chunking
     SPACY = "spacy"          # Semantic chunking using spaCy
     LANGCHAIN = "langchain"  # Semantic chunking using LangChain
+    FALLBACK = "fallback"    # Fallback chunking
 
 class DocumentType(str, Enum):
     PDF = "pdf"
@@ -41,6 +42,13 @@ class QueryRequest(BaseModel):
     max_chunks: int = 5
     similarity_threshold: float = 0.7
     embedding_model: Optional[str] = None
+    use_multi_step_reasoning: bool = False
+
+class ReasoningStep(BaseModel):
+    step_number: int
+    sub_question: str
+    context_used: str
+    step_answer: str
 
 class QueryResponse(BaseModel):
     query: str
@@ -48,6 +56,8 @@ class QueryResponse(BaseModel):
     relevant_chunks: List[DocumentChunk]
     model_used: str
     processing_time: float
+    reasoning_steps: Optional[List[ReasoningStep]] = None
+    num_steps: Optional[int] = None
 
 class HealthResponse(BaseModel):
     status: str

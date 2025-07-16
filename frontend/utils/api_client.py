@@ -39,7 +39,7 @@ class APIClient:
             response = requests.post(
                 f"{self.base_url}/query",
                 json=data,
-                timeout=120  # 1 minute timeout
+                timeout=180  # 3 minute timeout
             )
             response.raise_for_status()
             return response.json()

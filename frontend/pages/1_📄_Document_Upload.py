@@ -51,7 +51,7 @@ with st.sidebar:
         )
     except Exception as e:
         st.error(f"Failed to load models: {str(e)}")
-        selected_embedding_model = "mxbai-embed-large:latest"
+        selected_embedding_model = "snowflake-arctic-embed2:latest"
     
     st.divider()
     

@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     
     # Ollama Configuration
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_EMBEDDING_MODEL: str = "mxbai-embed-large:latest"
+    OLLAMA_EMBEDDING_MODEL: str = "snowflake-arctic-embed2:latest"
     OLLAMA_DEFAULT_MODEL: str = "qwen3:latest"
     
     # Qdrant Configuration

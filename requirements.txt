@@ -1,11 +1,10 @@
 #Core API
-fastapi==0.104.1
-uvicorn==0.24.0
+fastapi
+uvicorn
 pydantic
 pydantic-settings
-python-multipart==0.0.6
-httpx==0.25.2
-aiofiles==23.2.1
+python-multipart
+aiofiles
 streamlit
 
 #Document Processing
@@ -15,16 +14,17 @@ streamlit
 # python-pptx==0.6.22
 
 # New unified document processing library
-kreuzberg[entity-extraction]
+kreuzberg
 
 #Vector Database
-qdrant-client==1.7.0
+qdrant-client
 
 #NLP and ML
-spacy==3.7.2
+spacy
 langchain
 langchain-experimental
 langchain-community
+langchain-ollama
 
 #LLM Integration
-ollama==0.1.7
+ollama

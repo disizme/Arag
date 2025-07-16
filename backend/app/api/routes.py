@@ -8,7 +8,8 @@ from datetime import datetime
 
 from shared.models.schemas import (
     DocumentUploadRequest, DocumentUploadResponse, 
-    QueryRequest, QueryResponse, HealthResponse, CollectionInfoResponse
+    QueryRequest, QueryResponse, HealthResponse, CollectionInfoResponse,
+    ChunkingMethod, ReasoningStep
 )
 from backend.app.services.document_processor import document_processor
 from backend.app.services.chunking_service import chunking_service
@@ -42,15 +43,20 @@ async def upload_document(
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
-        # Process document
-        chunks = await document_processor.process_document(
+        # Extract text and create initial chunk
+        initial_chunk = await document_processor.process_document(
             file_path, 
-            file.filename, 
-            chunking_method
+            file.filename
         )
         
+        # Convert chunking method string to enum
+        if isinstance(chunking_method, str):
+            chunking_method_enum = getattr(ChunkingMethod, chunking_method.upper(), ChunkingMethod.RECURSIVE)
+        else:
+            chunking_method_enum = chunking_method
+        
         # Apply semantic chunking
-        refined_chunks = chunking_service.apply_chunking(chunks, chunking_method)
+        refined_chunks = chunking_service.apply_chunking(initial_chunk, chunking_method_enum)
         
         # Generate embeddings for chunks
         for chunk in refined_chunks:
@@ -85,45 +91,104 @@ async def query_documents(request: QueryRequest):
     start_time = time.time()
     
     try:
-        # Get query embedding
-        query_embedding = await ollama_service.get_embedding(request.query, request.embedding_model)
-        
-        # Search for similar chunks
-        similar_chunks = await qdrant_service.search_similar(
-            query_embedding,
-            limit=request.max_chunks,
-            score_threshold=request.similarity_threshold
-        )
-        
-        """         
-        if not similar_chunks:
+        if request.use_multi_step_reasoning:
+            # Multi-step reasoning approach
+            async def context_retrieval_func(sub_query: str) -> str:
+                """Context retrieval function for multi-step reasoning"""
+                # Get embedding for sub-query
+                sub_query_embedding = await ollama_service.get_embedding(sub_query, request.embedding_model)
+                
+                # Search for similar chunks
+                chunks = await qdrant_service.search_similar(
+                    sub_query_embedding,
+                    limit=request.max_chunks,
+                    score_threshold=request.similarity_threshold
+                )
+                
+                # Combine context from chunks
+                return "\n\n".join([chunk["content"] for chunk in chunks])
+            
+            # Use multi-step reasoning
+            reasoning_result = await ollama_service.multi_step_reasoning(
+                query=request.query,
+                context_retrieval_func=context_retrieval_func,
+                model_name=request.model_name
+            )
+            
+            # Get all chunks used across all steps for the response
+            all_chunks = []
+            reasoning_steps = []
+            
+            for step in reasoning_result["reasoning_steps"]:
+                # Convert step to ReasoningStep model
+                reasoning_step = ReasoningStep(
+                    step_number=step["step_number"],
+                    sub_question=step["sub_question"],
+                    context_used=step["context_used"],
+                    step_answer=step["step_answer"]
+                )
+                reasoning_steps.append(reasoning_step)
+                
+                # Get chunks for this step to include in response
+                step_embedding = await ollama_service.get_embedding(step["sub_question"], request.embedding_model)
+                step_chunks = await qdrant_service.search_similar(
+                    step_embedding,
+                    limit=request.max_chunks,
+                    score_threshold=request.similarity_threshold
+                )
+                all_chunks.extend(step_chunks)
+            
+            # Remove duplicates from chunks
+            unique_chunks = []
+            seen_ids = set()
+            for chunk in all_chunks:
+                if chunk["id"] not in seen_ids:
+                    unique_chunks.append(chunk)
+                    seen_ids.add(chunk["id"])
+            
+            processing_time = time.time() - start_time
+            
             return QueryResponse(
                 query=request.query,
-                answer="I couldn't find any relevant information to answer your question.",
-                relevant_chunks=[],
+                answer=reasoning_result["final_answer"],
+                relevant_chunks=unique_chunks,
                 model_used=request.model_name,
-                processing_time=time.time() - start_time
+                processing_time=processing_time,
+                reasoning_steps=reasoning_steps,
+                num_steps=reasoning_result["num_steps"]
             )
-         """
-        # Combine context from similar chunks
-        context = "\n\n".join([chunk["content"] for chunk in similar_chunks])
         
-        # Generate response
-        answer = await ollama_service.generate_response(
-            request.query, 
-            context, 
-            request.model_name
-        )
-        
-        processing_time = time.time() - start_time
-        
-        return QueryResponse(
-            query=request.query,
-            answer=answer,
-            relevant_chunks=similar_chunks,
-            model_used=request.model_name,
-            processing_time=processing_time
-        )
+        else:
+            # Standard single-step reasoning approach
+            # Get query embedding
+            query_embedding = await ollama_service.get_embedding(request.query, request.embedding_model)
+            
+            # Search for similar chunks
+            similar_chunks = await qdrant_service.search_similar(
+                query_embedding,
+                limit=request.max_chunks,
+                score_threshold=request.similarity_threshold
+            )
+            
+            # Combine context from similar chunks
+            context = "\n\n".join([chunk["content"] for chunk in similar_chunks])
+            
+            # Generate response
+            answer = await ollama_service.generate_response(
+                request.query, 
+                context, 
+                request.model_name
+            )
+            
+            processing_time = time.time() - start_time
+            
+            return QueryResponse(
+                query=request.query,
+                answer=answer,
+                relevant_chunks=similar_chunks,
+                model_used=request.model_name,
+                processing_time=processing_time
+            )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
