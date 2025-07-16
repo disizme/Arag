@@ -16,6 +16,7 @@ class OllamaService:
                 model=embedding_model,
                 prompt=text
             )
+            print(f"[Ollama] Embedding generated: {response}")
             return response['embedding']
         except Exception as e:
             raise Exception(f"Failed to get embedding: {str(e)}")
@@ -42,7 +43,7 @@ Please answer the question based on the provided context. If the context doesn't
         """List available models"""
         try:
             response = await asyncio.to_thread(self.client.list)
-            return [model['name'] for model in response['models']]
+            return [model['model'] for model in response['models']]
         except Exception as e:
             raise Exception(f"Failed to list models: {str(e)}")
     

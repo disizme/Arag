@@ -65,6 +65,8 @@ class ChunkingService:
             return self._fallback_chunk(text)
         
         try:
+            if len(text) > 10000:
+                self.spacy_model.max_length = len(text) + 100 
             doc = self.spacy_model(text)
             
             # Extract sentences
@@ -118,6 +120,8 @@ class ChunkingService:
             return self._fallback_chunk(text)
         
         try:
+            if len(text) > 10000:
+                self.spacy_model.max_length = len(text) + 100 
             doc = self.spacy_model(text)
             
             # Extract sentences with semantic information

@@ -4,14 +4,18 @@ from typing import List, Dict, Any, Optional
 from backend.app.core.config import settings
 from shared.models.schemas import DocumentChunk
 import uuid
+import asyncio
+import time
 
 class QdrantService:
     def __init__(self):
         self.client = QdrantClient(
             host=settings.QDRANT_HOST,
-            port=settings.QDRANT_PORT
+            port=settings.QDRANT_PORT,
+            timeout=120  # Set timeout to 120 seconds
         )
         self.collection_name = settings.QDRANT_COLLECTION_NAME
+        self.batch_size = 1000  # Process chunks in batches of 1000
         self._ensure_collection()
     
     def _ensure_collection(self):
@@ -32,8 +36,9 @@ class QdrantService:
             raise Exception(f"Failed to ensure collection: {str(e)}")
     
     async def add_chunks(self, chunks: List[DocumentChunk]) -> bool:
-        """Add document chunks to Qdrant"""
+        """Add document chunks to Qdrant in batches"""
         try:
+            # Convert chunks to points first
             points = []
             for chunk in chunks:
                 if chunk.embedding:
@@ -51,12 +56,50 @@ class QdrantService:
                     )
                     points.append(point)
             
-            if points:
-                self.client.upsert(
-                    collection_name=self.collection_name,
-                    points=points
-                )
+            if not points:
+                return True
+            
+            # Process in batches to avoid timeout
+            total_points = len(points)
+            print(f"[QDRANT] Processing {total_points} points in batches of {self.batch_size}")
+            
+            for i in range(0, total_points, self.batch_size):
+                batch = points[i:i + self.batch_size]
+                batch_num = (i // self.batch_size) + 1
+                total_batches = (total_points + self.batch_size - 1) // self.batch_size
+                
+                print(f"[QDRANT] Upserting batch {batch_num}/{total_batches} ({len(batch)} points)")
+                
+                retry_count = 0
+                max_retries = 3
+                
+                while retry_count < max_retries:
+                    try:
+                        start_time = time.time()
+                        await asyncio.to_thread(
+                            self.client.upsert,
+                            collection_name=self.collection_name,
+                            points=batch
+                        )
+                        end_time = time.time()
+                        print(f"[QDRANT] Batch {batch_num} completed in {end_time - start_time:.2f}s")
+                        break
+                    except Exception as e:
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            wait_time = 2 ** retry_count  # Exponential backoff
+                            print(f"[QDRANT] Batch {batch_num} failed (attempt {retry_count}/{max_retries}), retrying in {wait_time}s: {str(e)}")
+                            await asyncio.sleep(wait_time)
+                        else:
+                            raise Exception(f"Failed to upsert batch {batch_num} after {max_retries} attempts: {str(e)}")
+                
+                # Small delay between batches to avoid overwhelming Qdrant
+                if i + self.batch_size < total_points:
+                    await asyncio.sleep(0.1)
+            
+            print(f"[QDRANT] Successfully processed all {total_points} points")
             return True
+            
         except Exception as e:
             raise Exception(f"Failed to add chunks: {str(e)}")
     
@@ -72,7 +115,7 @@ class QdrantService:
                 collection_name=self.collection_name,
                 query_vector=query_embedding,
                 limit=limit,
-                score_threshold=score_threshold
+                #score_threshold=score_threshold
             )
             
             return [

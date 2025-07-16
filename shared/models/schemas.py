@@ -32,9 +32,7 @@ class DocumentUploadRequest(BaseModel):
 class DocumentUploadResponse(BaseModel):
     document_id: str
     filename: str
-    document_type: DocumentType
-    chunks_created: int
-    processing_time: float
+    status: str
 
 class QueryRequest(BaseModel):
     query: str
@@ -58,6 +56,18 @@ class QueryResponse(BaseModel):
     processing_time: float
     reasoning_steps: Optional[List[ReasoningStep]] = None
     num_steps: Optional[int] = None
+
+class ContextRetrievalRequest(BaseModel):
+    query: str
+    max_chunks: int = 5
+    similarity_threshold: float = 0.7
+    embedding_model: Optional[str] = None
+
+class ContextRetrievalResponse(BaseModel):
+    query: str
+    contexts: List[DocumentChunk]
+    total_chunks: int
+    processing_time: float
 
 class HealthResponse(BaseModel):
     status: str

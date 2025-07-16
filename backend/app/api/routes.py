@@ -1,15 +1,17 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form
 from fastapi.responses import JSONResponse
 from typing import List
 import os
 import shutil
 import time
+import threading
 from datetime import datetime
+import asyncio
 
 from shared.models.schemas import (
     DocumentUploadRequest, DocumentUploadResponse, 
     QueryRequest, QueryResponse, HealthResponse, CollectionInfoResponse,
-    ChunkingMethod, ReasoningStep
+    ChunkingMethod, ReasoningStep, ContextRetrievalRequest, ContextRetrievalResponse
 )
 from backend.app.services.document_processor import document_processor
 from backend.app.services.chunking_service import chunking_service
@@ -22,67 +24,62 @@ router = APIRouter()
 @router.post("/upload", response_model=DocumentUploadResponse)
 async def upload_document(
     file: UploadFile = File(...),
-    chunking_method: str = "spacy",
-    embedding_model: str = None
+    chunking_method: str = Form(...),
+    embedding_model: str = Form(...)
 ):
     """Upload and process a document"""
     start_time = time.time()
-    
     try:
         # Validate file type
         if not file.filename:
             raise HTTPException(status_code=400, detail="No filename provided")
-        
         document_type = document_processor.get_document_type(file.filename)
-        
+        print(f"[UPLOAD] Document type: {document_type}")
         # Create upload directory if it doesn't exist
         os.makedirs(settings.UPLOAD_DIRECTORY, exist_ok=True)
-        
         # Save uploaded file
         file_path = os.path.join(settings.UPLOAD_DIRECTORY, file.filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        
-        # Extract text and create initial chunk
-        initial_chunk = await document_processor.process_document(
-            file_path, 
-            file.filename
-        )
-        
-        # Convert chunking method string to enum
-        if isinstance(chunking_method, str):
-            chunking_method_enum = getattr(ChunkingMethod, chunking_method.upper(), ChunkingMethod.RECURSIVE)
-        else:
-            chunking_method_enum = chunking_method
-        
-        # Apply semantic chunking
-        refined_chunks = chunking_service.apply_chunking(initial_chunk, chunking_method_enum)
-        
-        # Generate embeddings for chunks
-        for chunk in refined_chunks:
-            embedding = await ollama_service.get_embedding(chunk.content, embedding_model)
-            chunk.embedding = embedding
-        
-        # Store chunks in Qdrant
-        await qdrant_service.add_chunks(refined_chunks)
-        
-        # Clean up uploaded file
-        os.remove(file_path)
-        
-        processing_time = time.time() - start_time
-        
-        return DocumentUploadResponse(
-            document_id=refined_chunks[0].metadata["document_id"],
-            filename=file.filename,
-            document_type=document_type,
-            chunks_created=len(refined_chunks),
-            processing_time=processing_time
-        )
-        
+        print(f"[UPLOAD] File saved to: {file_path}")
+        # Respond immediately that processing has started
+        response = {
+            "document_id": "processing",
+            "filename": file.filename,
+            "status": "processing"
+        }
+        # Start background processing (simulate async, but you can use a task queue in production)
+        def process_file():
+            step_start = time.time()
+            print(f"[UPLOAD] Extracting text and creating initial chunk...")
+            initial_chunk = asyncio.run(document_processor.process_document(file_path, file.filename))
+            print(f"[UPLOAD] Text extraction done in {time.time() - step_start:.2f}s")
+            step_start = time.time()
+            # Convert chunking method string to enum
+            if isinstance(chunking_method, str):
+                chunking_method_enum = getattr(ChunkingMethod, chunking_method.upper(), ChunkingMethod.RECURSIVE)
+            else:
+                chunking_method_enum = chunking_method
+            print(f"[UPLOAD] Applying chunking method: {chunking_method_enum}")
+            refined_chunks = chunking_service.apply_chunking(initial_chunk, chunking_method_enum)
+            print(f"[UPLOAD] Chunking {len(refined_chunks)} done in {time.time() - step_start:.2f}s")
+            step_start = time.time()
+            print("[Upload] Embedding generation started")   
+            for chunk in refined_chunks:
+                embedding = asyncio.run(ollama_service.get_embedding(chunk.content, embedding_model))
+                chunk.embedding = embedding
+            print(f"[UPLOAD] Embedding generation done in {time.time() - step_start:.2f}s")
+            step_start = time.time()
+            asyncio.run(qdrant_service.add_chunks(refined_chunks))
+            print(f"[UPLOAD] Qdrant upsert done in {time.time() - step_start:.2f}s")
+            os.remove(file_path)
+            print(f"[UPLOAD] File {file.filename} processed successfully in {time.time() - start_time:.2f}s")
+        threading.Thread(target=process_file, daemon=True).start()
+        return response
     except Exception as e:
-        # Clean up file if it exists
         if 'file_path' in locals() and os.path.exists(file_path):
             os.remove(file_path)
+        print(f"[UPLOAD] Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/query", response_model=QueryResponse)
@@ -189,6 +186,34 @@ async def query_documents(request: QueryRequest):
                 model_used=request.model_name,
                 processing_time=processing_time
             )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/retrieve-contexts", response_model=ContextRetrievalResponse)
+async def retrieve_contexts(request: ContextRetrievalRequest):
+    """Retrieve relevant contexts for a query without generating response"""
+    start_time = time.time()
+    
+    try:
+        # Get query embedding
+        query_embedding = await ollama_service.get_embedding(request.query, request.embedding_model)
+        
+        # Search for similar chunks
+        similar_chunks = await qdrant_service.search_similar(
+            query_embedding,
+            limit=request.max_chunks,
+            score_threshold=request.similarity_threshold
+        )
+        
+        processing_time = time.time() - start_time
+        
+        return ContextRetrievalResponse(
+            query=request.query,
+            contexts=similar_chunks,
+            total_chunks=len(similar_chunks),
+            processing_time=processing_time
+        )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

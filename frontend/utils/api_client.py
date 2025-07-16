@@ -14,7 +14,6 @@ class APIClient:
             data = {"chunking_method": chunking_method}
             if embedding_model:
                 data["embedding_model"] = embedding_model
-            
             response = requests.post(
                 f"{self.base_url}/upload",
                 files=files,
@@ -72,6 +71,27 @@ class APIClient:
             return response.json()
         except requests.exceptions.RequestException as e:
             raise Exception(f"Failed to get collection info: {str(e)}")
+    
+    def retrieve_contexts(self, query: str, max_chunks: int = 5, similarity_threshold: float = 0.7, embedding_model: str = None) -> Dict[str, Any]:
+        """Retrieve contexts for a query without generating response"""
+        try:
+            data = {
+                "query": query,
+                "max_chunks": max_chunks,
+                "similarity_threshold": similarity_threshold
+            }
+            if embedding_model:
+                data["embedding_model"] = embedding_model
+            
+            response = requests.post(
+                f"{self.base_url}/retrieve-contexts",
+                json=data,
+                timeout=60  # 1 minute timeout
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Failed to retrieve contexts: {str(e)}")
 
 # Initialize API client
 @st.cache_resource

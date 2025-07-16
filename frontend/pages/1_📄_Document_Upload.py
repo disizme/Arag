@@ -82,61 +82,39 @@ with st.sidebar:
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.header("Upload Documents")
+    st.header("Upload Document")
     
-    uploaded_files = st.file_uploader(
-        "Choose files",
+    uploaded_file = st.file_uploader(
+        "Choose a file",
         type=['pdf', 'docx', 'pptx'],
-        accept_multiple_files=True,
+        accept_multiple_files=False,
         help="Supported formats: PDF, DOCX, PPTX"
     )
     
-    if uploaded_files:
-        st.write(f"Selected {len(uploaded_files)} file(s)")
+    if uploaded_file:
+        with st.expander(f"📄 {uploaded_file.name}"):
+            st.write(f"**Size:** {uploaded_file.size / 1024:.1f} KB")
+            st.write(f"**Type:** {uploaded_file.type}")
         
-        for file in uploaded_files:
-            with st.expander(f"📄 {file.name}"):
-                st.write(f"**Size:** {file.size / 1024:.1f} KB")
-                st.write(f"**Type:** {file.type}")
-        
-        if st.button("Upload Documents", type="primary"):
+        if st.button("Upload Document", type="primary"):
             progress_bar = st.progress(0)
             status_text = st.empty()
-            
-            successful_uploads = 0
-            failed_uploads = 0
-            
-            for i, file in enumerate(uploaded_files):
-                try:
-                    status_text.text(f"Processing {file.name}...")
-                    
-                    # Read file content
-                    file_content = file.read()
-                    
-                    # Upload document
-                    result = api_client.upload_document(
-                        file_content, 
-                        file.name, 
-                        chunking_method,
-                        selected_embedding_model
-                    )
-                    
-                    st.success(f"✅ {file.name} uploaded successfully")
-                    st.json(result)
-                    successful_uploads += 1
-                    
-                except Exception as e:
-                    st.error(f"❌ Failed to upload {file.name}: {str(e)}")
-                    failed_uploads += 1
-                
-                # Reset file pointer for next read
-                file.seek(0)
-                
-                # Update progress
-                progress_bar.progress((i + 1) / len(uploaded_files))
-            
-            status_text.text(f"Complete! ✅ {successful_uploads} successful, ❌ {failed_uploads} failed")
-            progress_bar.empty()
+            try:
+                status_text.text(f"Processing {uploaded_file.name}...")
+                file_content = uploaded_file.read()
+                result = api_client.upload_document(
+                    file_content, 
+                    uploaded_file.name, 
+                    chunking_method,
+                    selected_embedding_model
+                )
+                st.success(f"✅ {uploaded_file.name} upload started")
+                st.json(result)
+            except Exception as e:
+                st.error(f"❌ Failed to upload {uploaded_file.name}: {str(e)}")
+            uploaded_file.seek(0)
+            progress_bar.progress(1.0)
+            status_text.text("Done!")
 
 with col2:
     st.header("Instructions")
