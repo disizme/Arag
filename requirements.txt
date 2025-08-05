@@ -28,3 +28,25 @@ langchain-ollama
 
 #LLM Integration
 ollama
+
+#Adaptive Agents - HuggingFace Models (optional)
+# Install these for ML-based agents (set USE_HUGGINGFACE_AGENTS=True in config)
+# For CPU-only inference:
+transformers
+torch
+sentence-transformers
+numpy
+
+# For GPU acceleration (optional - uncomment if you have CUDA):
+# torch>=2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
+# torchvision>=0.15.0+cu118 --index-url https://download.pytorch.org/whl/cu118
+# torchaudio>=2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
+
+# For training/testing HuggingFace models
+# Add these for dataset loading and evaluation
+
+datasets
+scikit-learn
+keybert
+matplotlib
+seaborn
