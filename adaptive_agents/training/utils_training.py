@@ -4,7 +4,7 @@ Shared Training Utilities
 Common functions and utilities used by both hallucination and specialization
 training scripts to reduce code duplication.
 """
-
+import argparse
 import logging
 import pandas as pd
 import numpy as np
@@ -17,13 +17,32 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from transformers import Trainer
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 logger = logging.getLogger(__name__)
 
 # Global flag to prevent multiple logging setups
 _logging_configured = False
 
+class WeightedTrainer(Trainer):
+    def __init__(self, class_weights=None, **kwargs):
+        super().__init__(**kwargs)
+        self.class_weights = class_weights
+    
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        labels = inputs.get("labels")
+        outputs = model(**inputs)
+        logits = outputs.get('logits')
+        
+        # Calculate class weights if not provided
+        if self.class_weights is None:
+            # You can compute weights from your training data
+            loss_fct = torch.nn.CrossEntropyLoss()
+        else:
+            weights = torch.tensor(self.class_weights, dtype=torch.float).to(logits.device)
+            loss_fct = torch.nn.CrossEntropyLoss(weight=weights)
+        
+        loss = loss_fct(logits.view(-1, 11), labels.view(-1))
+        return (loss, outputs) if return_outputs else loss
 
 def setup_training_logging(script_name: str):
     """
@@ -51,7 +70,8 @@ def setup_training_logging(script_name: str):
     log_dir.mkdir(exist_ok=True)
     
     # Create log file (single file per script type)
-    log_file = log_dir / f"{script_name}_training.log"
+    date_prefix = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = log_dir / f"{date_prefix}_{script_name}_training.log"
     
     # Configure logging
     logging.basicConfig(
@@ -83,7 +103,6 @@ def log_device_info():
     Log information about the available device for training.
     TrainingArguments will handle device selection automatically.
     """
-    import torch
     
     if torch.cuda.is_available():
         device_name = torch.cuda.get_device_name(0)
@@ -100,7 +119,6 @@ def log_device_info():
         
     else:
         logger.warning(f"⚠️  No GPU detected - training will use CPU (much slower)")
-        logger.warning(f"   Consider using a GPU for faster training")
 
 def create_data_splits(
     data: List[Dict],
@@ -129,12 +147,13 @@ def create_data_splits(
     # For testing with smaller datasets, allow splits that don't sum to 1.0
     total_size = train_size + val_size + test_size
     if total_size <= 0.1:  # Testing mode with small splits
+        stratify = False
         logger.info(f"[TESTING MODE] Using small dataset splits: {total_size:.3f} of total data")
     elif abs(total_size - 1.0) > 1e-6:
         raise ValueError("Split sizes must sum to 1.0")
     
     df = pd.DataFrame(data)
-    
+
     # For testing mode with small splits, sample from the dataset first
     if total_size < 1.0:
         # Sample the required portion of data first
@@ -153,26 +172,22 @@ def create_data_splits(
         val_size *= norm_factor
         test_size *= norm_factor
     
-    # For testing mode, disable stratification to avoid issues with small datasets
-    if total_size <= 0.1:  # Testing mode
-        stratify = False
-        # logger.info("[TESTING MODE] Disabled stratification for small dataset")
-    
     # Simple stratification
     if stratify:
         try:
-            stratify_col = pd.qcut(df[label_key], q=min(3, len(df)//10), labels=False, duplicates='drop')
+            # 11 unique scores in the dataset 0.0 to 1.0
+            stratify_col = pd.qcut(df[label_key], q=11, labels=False, duplicates='drop')
         except (ValueError, TypeError):
             stratify_col = None
     else:
         stratify_col = None
-    
     # First split: train vs (val + test)
     train_df, temp_df = train_test_split(
         df,
         test_size=(val_size + test_size),
         random_state=seed,
-        stratify=stratify_col
+        stratify=stratify_col,
+        shuffle=True
     )
     
     # Second split: val vs test
@@ -180,7 +195,8 @@ def create_data_splits(
         temp_df,
         test_size=test_size / (val_size + test_size),
         random_state=seed,
-        stratify=temp_df[label_key] if stratify else None
+        stratify=temp_df[label_key] if stratify else None,
+        shuffle=True
     )
     
     # Convert to records
@@ -242,7 +258,7 @@ def get_testing_config():
         "logging_steps": 5,    # lower for testing (was 50-100)
         
         # Other parameters
-        "early_stopping_patience": 3,
+        "early_stopping_patience": 1,
         "warmup_ratio": 0.1,
         "weight_decay": 0.01
     }
@@ -262,15 +278,15 @@ def get_production_config():
         
         # Training parameters
         "num_epochs": 30,
-        "batch_size": 32,
+        "batch_size": 16,
         "eval_batch_size": 16,
-        "save_steps": 200,
+        "save_steps": 100,
         "eval_steps": 50,
         "logging_steps": 50,
         
         
         # Other parameters
-        "early_stopping_patience": 3,
+        "early_stopping_patience": 5,
         "warmup_ratio": 0.1,
         "weight_decay": 0.01
     }
@@ -285,10 +301,16 @@ def setup_argument_parser(script_name: str = "training_script"):
     Returns:
         Configured argument parser
     """
-    import argparse
     
     parser = argparse.ArgumentParser(
         description=f"{script_name} - Train model with configurable parameters"
+    )
+    
+    parser.add_argument(
+        "--agent-type",
+        type=str,
+        default="hallucination",
+        help="Type of agent to train (hallucination or specialization)"
     )
     
     # Mode selection

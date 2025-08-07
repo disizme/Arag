@@ -123,9 +123,7 @@ class SpecializationPredictor:
         
         # Setup directories
         if output_dir is None:
-            date_prefix = datetime.now().strftime("%Y%m%d_%H%M%S")
-            model_safe_name = model_name.replace('/', '_')
-            output_dir = f"../models/saved_models/{date_prefix}_specialization_predictor_{model_safe_name}_{model_type}"
+            output_dir = f"../models/saved_models/specialization_predictor_updated"
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
