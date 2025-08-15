@@ -1,0 +1,2693 @@
+2Sum
+3D projection
+5D optical data storage
+80 Million Tiny Images
+A Logical Calculus of the Ideas Immanent in Nervous Activity
+A/B testing
+Abess
+ablation
+Ablation (artificial intelligence)
+Abramowitz and Stegun
+Absolute value rectification
+Absolutely convex set
+Abstract Wiener space
+ABX test
+Accelerated Linear Algebra
+accelerator chip
+Accessible stopping time
+accountability
+Accumulated local effects
+accuracy
+ACE model
+action
+Action model learning
+Activation function
+Active Brownian particle
+Active constraint
+active learning
+Active learning (machine learning)
+active learning agent
+activity
+Actor-critic algorithm
+AdaGrad
+ADALINE
+ADALINE adaptive linear element
+Adam
+Adamic–Adar index
+adaptation
+Adapted process
+adaptive dynamic programming
+adaptive learning
+Adaptive linear element
+Adaptive neuro fuzzy inference system
+Adaptive resonance theory
+Adaptive step size
+Additive process
+Additive smoothing
+Adjoint state method
+Adjugate matrix
+Administrative data
+Ads.txt
+adversarial example
+Adversarial machine learning
+Adversarial training
+adverse action notice
+adverse impact ratio
+Affine arithmetic
+Affine space
+Affinity analysis
+agent
+Agent mining
+agglomerative clustering
+agile
+AI principles
+AI_ML Development Platform
+AIOps
+Airy process
+AIS annealed importance sampling
+AIXI
+algorithm
+Algorithm selection
+algorithmic aversion
+Algorithmic bias
+Algorithmic inference
+Algorithmic party platforms in the United States
+Algorithms of Oppression
+alignment
+All models are wrong
+All-serial CORDIC
+Almeida–Pineda recurrent backpropagation
+Almost everywhere
+Almost sure convergence
+Almost surely
+ALOPEX
+AlterEgo
+Amazon Kinesis
+AMiner (database)
+Amitsur–Levitzki theorem
+amplification
+Analysis of similarities
+Analysis of variance
+Analytic function of a matrix
+Analytics
+Ancestral sampling
+Anderson acceleration
+Angles between flats
+Annealed importance sampling
+Annihilating polynomial
+annotation
+anomaly
+Anomaly detection
+anonymization
+anthropomorphism
+Antieigenvalue theory
+Antilinear map
+Antiunitary operator
+Aporia (company)
+application
+application programming interface (API)
+Applied element method
+Apprenticeship learning
+Approximate Bayesian computation
+Approximate inference
+Approximation
+Approximation error
+Approximation theory
+AR
+Archetypal analysis
+area under the PR curve
+area under the ROC curve
+Argument mining
+Art Recognition
+artificial general intelligence
+Artificial intelligence
+artificial intelligence (AI) system
+Artificial intelligence content detection
+Artificial intelligence in fraud detection
+Artificial intelligence in hiring
+artificial intelligence learning
+Artificial Intelligence System
+artificial narrow intelligence (ANI)
+Artificial Neural network
+artificial neural networks
+Artificial neuron
+Artificial precision
+Artisto
+ASR automatic speech recognition
+assessment
+Association rule learning
+Associative classifier
+Astroinformatics
+Astrostatistics
+Asymmetric norm
+Asymptotic geometry
+Asymptotically unbiased
+attack
+attention
+Attention (machine learning)
+attribute
+attribute sampling
+AUC (Area under the ROC curve)
+Audio
+Audio inpainting
+audit
+audit log
+Augmented Analytics
+Augmented filtration
+augmented reality
+authenticity
+auto-regressive model
+Autoassociative memory
+Autoencoder
+Autologistic actor attribute models
+Automated decision-making
+Automated machine learning
+Automatic clustering algorithms
+automatic evaluation
+Automatic speech recognition
+Automatic summarization
+automation
+automation bias
+Automation in construction
+AutoML
+autonomic
+autonomous vehicle
+autonomy
+autorater evaluation
+auxiliary loss
+availability
+average precision at k
+axis-aligned condition
+Aﬃne
+Back-propagation
+Back-propagation through time
+back-testing
+Backpropagation
+Backpropagation through structure
+Backpropagation through time
+Backus–Gilbert method
+BADIR
+bag of words
+Bag-of-words model
+bagging
+Balanced set
+Ball divergence
+Ball tree
+Bartlett__apos__s test
+Barycentric coordinate system
+Base effect
+base model
+Base rate
+baseline
+Basic affine jump diffusion
+Basis (linear algebra)
+Basis function
+batch
+batch inference
+batch normalization
+batch size
+batched automation
+Bayes error
+Bayesian hyperparameter optimization
+Bayesian interpretation of kernel regularization
+Bayesian learning mechanisms
+Bayesian model reduction
+Bayesian network
+Bayesian neural network
+Bayesian optimization
+Bayesian probability
+Bayesian regret
+Bayesian statistics
+Bayesian structural time series
+Bayes’ rule
+BCPNN
+Belief network
+Bellman equation
+benchmark
+Bendixson__apos__s inequality
+Bernoulli distribution
+Bernoulli process
+Bernstein polynomial
+Bernstein__apos__s constant
+BERT (Bidirectional Encoder
+Bessel process
+BFGS
+Bi-directional delay line
+bias
+bias (ethics/fairness)
+bias (math) or bias term
+bias mitigation algorithm
+Bias parameter
+bias testing
+Biased importance sampling
+Bias–variance tradeoff
+Bibliomining
+Bidiagonal matrix
+Bidiagonalization
+bidirectional
+Bidirectional associative memory
+bidirectional language model
+Bidomain model
+Big data
+Big data ethics
+Big Data Institute
+Big data maturity model
+Big Data to Knowledge
+Big M method
+Big memory
+Big O in probability notation
+bigram
+Bilinear form
+Binary classification
+binary condition
+Binary relation
+binning
+Binomial test
+Biomedical data science
+Biomedical text mining
+biometric data
+Bioserenity
+Bioz
+BisQue (Bioimage Analysis and Management Platform)
+Blackwell-Girshick equation
+BLEU (Bilingual Evaluation Understudy)
+BLEURT (Bilingual Evaluation Understudy from Transformers)
+Block Gibbs sampling
+Block matrix pseudoinverse
+Blossom (functional)
+Blumenthal__apos__s zero–one law
+Boltzmann distribution
+Boltzmann machine
+Boole__apos__s rule
+boosting
+Bootstrap aggregating
+Borel right process
+bound
+Boundary knot method
+Boundary particle method
+bounding box
+Box__apos__s M test
+Bradley–Terry model
+Brain.js
+BrainChip
+Branching CORDIC
+Bra–ket notation
+breach
+Breusch–Godfrey test
+Breusch–Pagan test
+broad artificial intelligence (broad AI)
+broadcasting
+Brownian motion and Riemann zeta function
+Brown–Forsythe test
+Brunner Munzel Test
+bucketing
+Bueno-Orovio–Cherry–Fenton model
+Buffered probability of exceedance
+bug-bounty
+built-in test
+Bunch–Nielsen–Sorensen formula
+Burn-in
+Burst buffer
+Business analytics
+business process
+business process management
+business rule
+Butcher group
+CAE contractive autoencoder
+Calculus of variations
+Calderón projector
+calibration
+calibration layer
+candidate generation
+candidate sampling
+Canonical basis
+capability
+Capsule neural network
+Carleman matrix
+Carleman__apos__s condition
+Carré du champ operator
+Cartesian tensor
+Casanova__apos__s Lottery
+case
+Catalog of articles in probability theory
+Catastrophic cancellation
+Catastrophic interference
+categorical data
+Categorical distribution
+Categorical probability
+Category of Markov kernels
+Category of matrices
+Category of measurable spaces
+Category of modules
+Category utility
+Category__colon__Applied data mining
+Category__colon__Artificial intelligence conferences
+Category__colon__Biostatistical methods
+Category__colon__Complex distributions
+Category__colon__Data analysis software
+Category__colon__Data journalism
+Category__colon__Data mining
+Category__colon__Data mining and machine learning software
+Category__colon__Data science
+Category__colon__Deep learning software
+Category__colon__Design of experiments
+Category__colon__Econometric models
+Category__colon__Genetic algorithms
+Category__colon__Google DeepMind
+Category__colon__Infinitely divisible probability distributions
+Category__colon__Location-scale family probability distributions
+Category__colon__Network analyzers
+Category__colon__Probability distributions with non-finite variance
+Category__colon__Statistical charts and diagrams
+Category__colon__Systems of probability distributions
+Category__colon__Text-to-video generation
+Cauchy–Schwarz inequality
+Causal analysis
+causal language model
+Cayley–Hamilton theorem
+CD contrastive divergence
+Cell-based models
+Cellular neural network
+Centering trick (DBM)
+Central limit theorem
+Central tendency
+Centre for Genomic Pathogen Surveillance
+centroid
+centroid-based clustering
+Centrosymmetric matrix
+Cerebellar model articulation controller
+Chain rule (calculus)
+Chain rule (probability)
+Chain rule of probability
+chain-of-thought prompting
+Challenge
+Change of basis
+Characteristic polynomial
+Characteristic samples
+chat
+chatbot
+Chauvenet__apos__s criterion
+Chebyshev nodes
+checkpoint
+Cheeger bound
+Chernoff__apos__s distribution
+Chess
+Chinese restaurant process
+Choi__apos__s theorem on completely positive maps
+Chord
+Chordal graph
+choreography
+Chvátal–Sankoff constants
+CIML community portal
+class
+Class-based language models
+class-imbalanced dataset
+Classical dynamical system
+Classical Wiener space
+classification
+classification model
+classification threshold
+classifier
+Claude (language model)
+Clenshaw algorithm
+CLEVER score
+clipping
+Clique potential factor(graphicalmodel)
+Closest point method
+Cloud TPU
+Cluster analysis
+clustering
+CN2 algorithm
+CNN convolutional neural network
+co-adaptation
+Co-occurrence network
+co-training
+Coalescence (statistics)
+Coates graph
+Cochran__apos__s C test
+Cochran__apos__s Q test
+CoDi
+Codimension
+Coefficient matrix
+cognitive automation
+Cognitive computer
+cognitive computing
+Cognitive robotics
+collaborative filtering
+Collectively exhaustive events
+Collider
+Collocation (remote sensing)
+Color images
+column
+Combinatorial data analysis
+Combinatorial matrix theory
+Committee machine
+Commutation matrix
+Commuting matrices
+compact model
+Companion matrix
+Comparison of linear algebra libraries
+Compensated CORDIC
+Competitive learning
+Complete filtration
+Completely randomized design
+Complex cell
+Complex conjugate of a vector space
+Complex number
+Complex random variable
+Complex random vector
+Composite methods for structural dynamics
+Compositional pattern-producing network
+Compressed sensing
+Computational complexity of matrix multiplication
+Computational cybernetics
+Computational graph
+Computational neurogenetic modeling
+Computational statistics
+compute
+computer vision
+Computer-assisted proof
+Computing the permanent
+Concept drift
+Concept mining
+Conceptual clustering
+condition
+Condition number
+Conditional computation
+Conditional independence xiii
+Conditional probability
+Conditional random field
+Conditional RBM
+conditions
+confabulation
+Confabulation (neural networks)
+confidentiality
+configuration
+confirmation bias
+Conflation (statistics)
+Conformable matrix
+Confusion matrix
+Conjugate transpose
+Connectionism
+Connectionist temporal classification
+consent
+Consistency
+Constant-recursive sequence
+constituency parsing
+constituent system
+Constrained optimization
+constraint
+construct validity
+Constructing skill trees
+Contact process (mathematics)
+content validity
+Content-based addressing
+Content-based recommender systems
+context
+context window
+context-of-use
+Context-specific independence
+Contextual bandits
+contextual learning
+contextualized language embedding
+Contiguity (probability theory)
+Continuation methods
+Continuity in probability
+Continuous analytics
+continuous feature
+Continuous stochastic process
+Continuous wavelet
+Continuous-time stochastic process
+Continuum percolation theory
+Contractive autoencoder
+Contrast
+Contrast set learning
+Contrastive divergence
+Contrastive Hebbian learning
+Contrastive Language-Image Pre-training
+control class
+Control function (econometrics)
+controllability
+Controlled invariant subspace
+controller
+convenience sampling
+convergence
+Convergence of Probability Measures
+Convergence of random variables
+Conversica
+Convex cone
+convex function
+convex optimization
+convex set
+convolution
+Convolutional deep belief network
+convolutional filter
+Convolutional layer
+Convolutional network
+convolutional neural network
+convolutional operation
+Convolutionalneuralnetwork
+Coordinate descent
+Coordinate Rotation Digital Computer
+Coordinate vector
+copilot
+Corank
+CORDIC
+corpus (corpora)
+correlation
+Cosine similarity
+cost
+Cost function
+Cost-sensitive machine learning
+COTSBot
+counterfactual explanation
+counterfactual fairness
+countermeasure
+Counting process
+Coupled pattern learner
+Coupling (probability)
+Coupling card trick
+Covariance matrix
+Covariance operator
+Covariance xiii
+Cover__apos__s theorem
+Coverage
+coverage bias
+Cracovian
+crash blossom
+criterion validity
+critic
+Critical temperature
+Cross-correlation
+cross-entropy
+Cross-entropy method
+Cross-industry standard process for data mining
+cross-validation
+Cross-validation (statistics)
+Crouzeix__apos__s conjecture
+crowdsource
+CSS code
+CTC connectionist temporal classification
+cumulative distribution function (CDF)
+Curriculum learning
+Curse of dimensionality
+customer
+Cuthill–McKee algorithm
+Cuzick–Edwards test
+cybersecurity
+Cyborg data mining
+Cyc
+Cyclic subspace
+Cyclical monotonicity
+Càdlàg
+D-separation
+DAE denoising autoencoder
+DALL-E
+Dark data
+dark pattern
+data
+Data access
+Data analysis
+Data analysis for fraud detection
+data analytics
+Data augmentation
+data cleaning
+data control
+Data dredging
+data drift
+Data exploration
+data fabric
+Data farming
+Data fusion
+Data generating distribution
+Data generating process
+data governance
+Data lineage
+Data literacy
+Data management platform
+Data mining
+Data Mining and Knowledge Discovery
+data parallelism
+Data philanthropy
+Data physicalization
+data point
+data preparation
+Data preprocessing
+Data profiling
+data proxy
+data quality
+Data science
+data scientist
+data seeding
+data set or dataset
+Data shadow
+Data stream
+Data stream management system
+Data stream mining
+Data technology
+Data universalism
+Data version control
+data wrangling
+Data-centric security
+data-driven
+Data-driven astronomy
+Data-driven model
+Data-informed decision-making
+Datafication
+DataFrame
+Dataism
+DataOps
+Dataset
+Dataset API (tf.data)
+Dataset augmentation
+Dataveillance
+DBM deep Boltzmann machine
+DCGAN
+DCORDIC
+De Boor__apos__s algorithm
+De Casteljau__apos__s algorithm
+decision
+decision boundary
+decision forest
+Decision list
+decision point
+decision support system
+decision threshold
+decision tree
+Decision tree pruning
+decision-making
+decoder
+decommission
+Decoupling (probability)
+deductive analytics
+Deep belief network
+Deep Blue
+Deep Boltzmann machine
+Deep feedforward network
+Deep image prior
+Deep Instinct
+Deep lambertian networks
+Deep learning
+Deep learning in photoacoustic imaging
+deep model
+deep neural network
+Deep Q-Network (DQN)
+Deep reinforcement learning
+Deep Tomographic Reconstruction
+deepfake
+DeepNude
+Defective matrix
+Definite quadratic form
+Degree-Rips bifiltration
+Dehaene–Changeux model
+deletion
+Delta operator
+Delta rule
+demographic parity
+denial-of-service
+denoising
+Denoising autoencoder
+Denoising score matching
+dense feature
+dense layer
+Density estimation
+dependability
+Dependence relation
+Dependent Dirichlet process
+deployment
+depth
+depthwise separable convolutional neural network (sepCNN)
+Derivative of the exponential map
+Derivative xiii
+derived label
+descent
+descriptive analytics
+Design matrix
+Detector layer
+Determinant
+Determinant xii
+deterministic
+deterministic algorithm
+developer
+Developmental robotics
+device
+DexNet
+diagnostic analytics
+diagnostics
+Diagonal matrix
+Dieudonné determinant
+Difference quotient
+Differentiable neural computer
+Differential CORDIC
+differential privacy
+differential validity
+Differential-algebraic system of equations
+Diffusion map
+Diffusion model
+Digital cloning
+digital labor
+Digital Library of Mathematical Functions
+digital workforce
+Dilution (neural networks)
+dimension
+Dimension (vector space)
+dimension reduction
+dimensions
+Dirac delta function
+direct prompting
+Direct sum of matrices
+Direct sum of modules
+Directed graphical model
+Directional component analysis
+Directional derivative
+Directional-change intrinsic time
+Dirichlet process
+Discovery system (artificial intelligence)
+Discrete calculus
+discrete feature
+Discrete Fourier transform
+Discrete wavelet transform
+Discretization
+Discretization error
+Discriminative fine-tuning
+discriminative model
+Discriminative RBM
+discriminator
+Disorder problem
+disparate impact
+disparate treatment
+Dissociated press
+distillation
+Distributed representation
+distribution
+distributional robustness
+Distributional Soft Actor Critic
+diversity
+divisive clustering
+Dixon__apos__s Q test
+Diﬀerential entropy
+DL Boost
+Do-calculus
+DOACROSS parallelism
+Document classification
+Document-oriented database
+documentation
+Documenting Hate
+DOE mean plot
+domain
+Domain adaptation
+Domain driven data mining
+domain expertise
+domain shift
+Dominance-based rough set approach
+Donsker classes
+Dormand–Prince method
+Dot product
+Double backprop
+Double descent
+Double mass analysis
+Doubly block circulant matrix
+downsampling
+DQN
+Dream sleep
+drinking your own champagne
+DropConnect
+Dropout
+dropout regularization
+Dual basis
+Dual basis in a field extension
+Dual norm
+Dual number
+Dual space
+Dual total correlation
+Duncan__apos__s new multiple range test
+Dunnett__apos__s test
+Durbin test
+Durbin–Wu–Hausman test
+dynamic
+dynamic model
+dynamic process
+Dynamic relaxation
+Dynamic structure
+Dynamic time warping
+Dynkin system
+Dynkin–Kruskal sequence
+Dyson Brownian motion
+E-step
+E-values
+eager execution
+Eager learning
+Early stopping
+earth mover's distance (EMD)
+EBM energy-based model
+Echo state network
+ECL (data-centric programming language)
+EDF)
+edge case
+edit distance
+Efficiently updatable neural network
+EfficientNet
+Eigendecomposition
+Eigendecomposition of a matrix
+Eigengap
+Eigenoperator
+Eigenplane
+Eigenvalue
+Eigenvalue perturbation
+Eigenvalues and eigenvectors
+Eigenvalues and eigenvectors of the second derivative
+Eigenvector
+Einsum notation
+Elastic map
+Elastic net regularization
+ELBO evidence lower bound
+Electricity price forecasting
+Electronic Journal of Linear Algebra
+Element-wise product
+Elementary matrix
+EleutherAI
+ELMo
+EM algorithm and GMM model
+EM expectation maximization
+Embedded analytics
+embedding
+Embedding (machine learning)
+embedding layer
+embedding space
+embedding vector
+Empirical characteristic function
+empirical cumulative distribution function (eCDF or
+Empirical distribution
+Empirical dynamic modeling
+Empirical risk
+Empirical risk minimization
+empirical risk minimization (ERM)
+emulation
+encoder
+end event
+endpoints
+Energy function
+Energy-based model
+engineer
+ensemble
+Ensemble methods
+Entanglement-assisted stabilizer formalism
+entropy
+environment
+episode
+epoch
+epsilon greedy policy
+Equality constraint
+equality of odds
+equality of opportunity
+Equalized odds
+Equioscillation theorem
+Equivalence test
+Equivariance
+error
+Error analysis (mathematics)
+Error function
+Error level analysis
+error propagation
+Error-driven learning
+ESN echo state network
+Estimator
+Estrin__apos__s scheme
+ethics
+ethics by design
+Euclidean norm
+Euclidean space
+Euclidean vector
+Euler-Lagrange equation
+European Neural Network Society
+evals
+evaluation
+Evaluation of binary classifiers
+Evidence lower bound
+Evolutionary data mining
+Evolutionary multimodal optimization
+Evolvability (computer science)
+Exact test
+example
+exception
+Excursion probability
+execute
+Exotic probability
+Expectation
+Expectation maximization
+Expectation propagation
+Expectation–maximization algorithm
+experience replay
+experiment
+experimenter's bias
+expert system
+expertise
+explainability
+explainer
+Explaining away
+explanation
+Explanation-based learning
+Explicit algebraic stress model
+exploding gradient problem
+Exploitation
+Exploration
+Exploration–exploitation dilemma
+exploratory
+Exponential dispersion model
+Exponential distribution
+Exponential integrator
+Exponentially equivalent measures
+Extension neural network
+external validity
+Extinction probability
+Extremal Ensemble Learning
+Extreme learning machine
+Eﬀective capacity
+F 1
+F-score
+F-test
+F-test of equality of variances
+Facebook–Cambridge Analytica data scandal
+FaceNet
+Facet theory
+facial recognition (FR)
+Factor (graphical model)
+Factor analysis
+Factor combining
+Factor graph
+Factors of variation
+factuality
+Faddeev–LeVerrier algorithm
+Fairness (machine learning)
+fairness constraint
+fairness metric
+false negative
+false negative (FN)
+false negative rate
+false positive
+false positive (FP)
+false positive rate (FPR)
+False precision
+Fangcheng (mathematics)
+fast decay
+Fast multipole method
+FastICA
+Fat Chance__colon__ Probability from 0 to 1
+fault tolerance
+favorable label
+Fay and Wu__apos__s H
+feature
+Feature (machine learning)
+feature cross
+Feature engineering
+feature extraction
+Feature hashing
+feature importance
+feature importances
+Feature learning
+Feature scaling
+Feature selection
+feature set
+feature shift
+feature spec
+feature vector
+featurization
+Federated learning
+Federated Learning of Cohorts
+FEE method
+Feed forward (control)
+feedback loop
+Feedforward neural network
+feedforward neural network (FFN)
+Feller-continuous process
+few-shot learning
+few-shot prompting
+Feynman–Kac formula
+Fiddle
+File dynamics
+Filtered probability space
+Filtration (mathematics)
+Filtration (probability theory)
+fine-tuning
+Fine-tuning (deep learning)
+Finite difference
+Finite diﬀerences
+Finite Legendre transform
+Finite volume method
+Finite von Neumann algebra
+Finite-dimensional distribution
+firmware
+Fisher__apos__s method
+fitting
+Fixed-point computation
+Flag (linear algebra)
+Flash model
+Flat (geometry)
+Flax
+Flaxformer
+Flow-based generative model
+Flux (machine-learning framework)
+Flux (text-to-image model)
+Fokker–Planck equation
+Force control
+Forecasting
+forget gate
+Formal concept analysis
+Forward problem of electrocardiology
+Forward propagation
+Forward–backward algorithm
+Foundation model
+Fourier transform
+Fourth Industrial Revolution
+Fovea
+FPCD
+fraction of successes
+Frame (linear algebra)
+fraud detection
+Fredholm alternative
+Fredholm__apos__s theorem
+Free energy
+Freebase
+Freivalds__apos__ algorithm
+Frequency of exceedance
+Frequency principle_spectral bias
+Frequent pattern discovery
+Frequentist probability
+Frequentist statistics
+Friedman test
+Frobenius covariant
+Frobenius determinant theorem
+Frobenius inner product
+Frobenius norm
+Frobenius normal form
+full softmax
+fully autonomous
+fully connected layer
+Fully-visible Bayes network
+Function space
+function transformation
+Functional derivatives
+Fusion frame
+FVBN fully-visible Bayes network
+Gabor function
+Gal__apos__s accurate tables
+Galerkin method
+Galton–Watson process
+GAN
+GANs generative adversarial networks
+Gated recurrent unit
+Gating mechanism
+Gaussian distribution
+Gaussian distribution on a locally compact Abelian group
+Gaussian free field
+Gaussian kernel
+Gaussian measure
+Gaussian mixture
+Gaussian noise
+Gaussian probability space
+Gaussian process
+Gaussian splatting
+GCD matrix
+GCN global contrast normalization
+Gemini
+Gemini models
+Gemma
+GenAI or genAI
+GeneOntology
+General linear group
+generalization
+generalization curve
+Generalizations of Pauli matrices
+Generalized eigenvector
+Generalized Gauss–Newton method
+Generalized Hebbian algorithm
+Generalized Lagrange function
+Generalized Lagrangian
+generalized linear model
+Generalized singular value decomposition
+Generalized-strain mesh-free formulation
+generated text
+Generative adversarial network
+generative adversarial network (GAN)
+Generative adversarial networks
+generative AI
+Generative artificial intelligence
+Generative model
+Generative moment matching networks
+Generative pre-trained transformer
+Generative topographic map
+generator
+Generator network
+GeneRec
+Genetic Algorithm for Rule Set Production
+Geographic analytics
+Geolitica
+Geometric feature learning
+Geometric probability
+Gerald Tesauro
+Gershgorin circle theorem
+GetFEM++
+Gibbs distribution
+Gibbs sampling
+Gibbs state
+Gilbert tessellation
+gini impurity
+Girsanov theorem
+Giry monad
+Glejser test
+global
+Global contrast normalization
+Glossary of artificial intelligence
+Glossary of linear algebra
+golden dataset
+golden response
+Golden–Thompson inequality
+Goldfeld–Quandt test
+Goodman and Kruskal__apos__s gamma
+Google AI Studio
+Google DeepMind
+Google Neural Machine Translation
+governance
+GPT (Generative Pre-trained Transformer)
+GPU graphics processing unit
+Graded structure
+gradient
+gradient accumulation
+gradient boosted (decision) trees (GBT)
+gradient boosting
+gradient clipping
+gradient descent
+Gradient discretisation method
+Gram–Schmidt process
+Granular computing
+graph
+graph execution
+Graph neural network
+Graph xii
+Graphical model
+graphical processing unit (GPU)
+Graphical time warping
+Graphics processing unit
+Graphoid
+Graphon
+Greedy algorithm
+Greedy layer-wise unsupervised pretraining
+greedy policy
+Greedy supervised pretraining
+Grid search
+GRIM test
+Grokking (machine learning)
+Grossberg network
+ground truth
+groundedness
+group attribution bias
+group fairness
+Group method of data handling
+Growing self-organizing map
+Grubbs__apos__s test
+Guard digit
+Guided analytics
+hacker
+Hadamard product
+Hadamard product (matrices)
+Hadamard product xii
+Hadamard variation formula
+Hahn–Banach theorem
+Hajek projection
+hallucination
+Hallucination (artificial intelligence)
+Hamming space
+Hampel test
+Hard
+Hard sigmoid
+hardware
+Hardy distribution
+harm
+harmful bias
+Harmony theory
+Hartley__apos__s test
+hashing
+Hawkes process
+Haynsworth inertia additivity formula
+Head_tail breaks
+Health care analytics
+Hebbian theory
+Helmholtz free energy
+Helmholtz machine
+Hermes Project
+Hermite normal form
+Hessian
+Hessian matrix xiii
+Heteroscedastic
+heuristic
+Hidden layer
+hierarchical clustering
+Hierarchical Dirichlet process
+Hierarchical navigable small world
+Hierarchical Risk Parity
+Hierarchical temporal memory
+High-dimensional statistics
+Highway network
+Hilbert space
+hill climbing
+hinge loss
+historical bias
+History of artificial neural networks
+Hitting time
+Hoeffding__apos__s independence test
+holdout data
+Holm–Bonferroni method
+Horner__apos__s method
+Hosmer–Lemeshow test
+host
+How Data Happened
+Ho–Kashyap rule
+human evaluation
+human in the loop (HITL)
+human subjects
+human system integration (HSI)
+human-assisted
+human-cognitive bias
+human-computer interaction (HCI)
+human-enabled machine learning
+human-in-the-loop
+human-machine teaming (HMT)
+human-operator-intervention
+Hundred-dollar, Hundred-digit Challenge problems
+Hurdle model
+Hybrid CORDIC
+Hybrid Kohonen self-organizing map
+Hybrid neural network
+Hyper basis function network
+Hyperdimensional computing
+hyperparameter
+Hyperparameter optimization
+hyperparameters
+hyperplane
+Hypothesis space
+hypothesis testing
+i.i.d.
+i.i.d. assumptions
+IBM Granite
+Ibragimov–Iosifescu conjecture for φ-mixing sequences
+Iconography of correlations
+Identifiability analysis
+Identity matrix
+IDistance
+ILSVRC ImageNet Large Scale Visual
+image recognition
+ImageNet Large Scale Visual Recognition
+imbalanced dataset
+Imitation learning
+Immanant
+Immorality
+impact assessment
+Impartial culture
+impersonation
+implicit bias
+Importance sampling
+Importance weighted autoencoder
+Impossibility of a gambling system
+Imprecise probability
+imputation
+in silico
+in-context learning
+in-group bias
+in-processing
+in-processing algorithm
+in-set condition
+Inception (deep learning architecture)
+incident
+incident response
+Inclusion–exclusion principle
+incompatibility of fairness metrics
+Increasing process
+Incremental learning
+independence
+Independence xiii
+Independent and identically distributed see
+Independent component analysis
+Independent increments
+Independent S-increments
+Independent subspace analysis
+independently and identically distributed (i.i.d)
+Indicator function
+individual fairness
+Inductive probability
+Industrial big data
+Inequality constraint
+inference
+inference path
+Infinitesimal model
+Infomax
+information gain
+information input component
+Information matrix test
+Information retrieval
+information security
+Information source (mathematics)
+Initialization
+input
+input generator
+input layer
+insider attack
+instance
+Instance selection
+instance weight
+Instantaneously trained neural networks
+instruction tuning
+Integrable algorithm
+Integral xiii
+integrity
+Intelligence engine
+intelligent process automation
+Intensity measure
+Intensity of counting processes
+inter-rater agreement
+interaction
+Interactive activation and competition networks
+Interleaving distance
+internal validity
+International Journal of Data Warehousing and Mining
+International Linear Algebra Society
+interoperability
+interpretability
+interpretable model
+intersection over union (IoU)
+Interval arithmetic
+Interval contractor
+Interval propagation
+intervenability
+INTLAB
+Invariance
+Invariant sigma-algebra
+Inverse Dirichlet distribution
+Invertible matrix
+Ionescu-Tulcea theorem
+IoU
+IPO underpricing algorithm
+Isolation forest
+Isotonic regression
+Isotropic
+Isotropic measure
+IT operations analytics
+item matrix
+Item tree analysis
+items
+iteration
+Iterative method
+Iterative rational Krylov algorithm
+Jacobi__apos__s formula
+Jacobian matrix
+JAX
+Jenkins–Traub algorithm
+Jeph Acheampong
+Joint probability
+Jonckheere__apos__s trend test
+Jordan matrix
+Jordan normal form
+Journal of Big Data
+Jpred
+Jump diffusion
+Jump process
+k-fold cross validation
+k-means
+k-median
+k-nearest neighbors
+K-nearest neighbors algorithm
+K-optimal pattern discovery
+Kahan summation algorithm
+Kaiser–Meyer–Olkin test
+Kaniadakis distribution
+Kaniadakis exponential distribution
+Kaniadakis Gaussian distribution
+Kaniadakis logistic distribution
+Kantorovich theorem
+Karlsruhe Accurate Arithmetic
+Karush-Kuhn-Tucker conditions
+Karush–Kuhn–Tucker
+Kempner series
+Kendall rank correlation coefficient
+Keras
+Kernel (convolution)
+Kernel machine
+Kernel methods for vector output
+Kernel principal component analysis
+Kernel Support Vector Machines (KSVMs)
+Kernel trick
+keypoints
+Key–value database
+Khatri-Rao product
+Khatri–Rao product
+Killed process
+Kinetic scheme
+KKT Karush–Kuhn–Tucker
+KL divergence Kullback-Leibler divergence
+Kneser–Ney smoothing
+knowledge
+Knowledge base
+Knowledge distillation
+Kolmogorov__apos__s inequality
+KPZ fixed point
+Kronecker product
+Kronecker sum of discrete Laplacians
+Kruskal–Wallis test
+Krylov methods
+Kuiper__apos__s test
+Kulisch arithmetic
+Kullback-Leibler divergence xiii
+L 0 regularization
+L 1 loss
+L 1 regularization
+L 2 loss
+L 2 regularization
+L1-norm principal component analysis
+label
+label leakage
+Label propagation algorithm
+label shift
+Label smoothing
+labeled example
+Lady Windermere__apos__s Fan (mathematics)
+Lagrange multipliers
+Lagrangian
+lambda
+Lambda architecture
+LaMDA (Language Model for Dialogue Applications)
+Lancichinetti–Fortunato–Radicchi benchmark
+Lanczos approximation
+Land use regression model
+landmarks
+language model
+LAPGAN
+Laplace distribution
+Laplace expansion
+Large deviations of Gaussian random functions
+Large language model
+large language model (LLM)
+Large memory storage and retrieval neural network
+Large width limits of neural networks
+Lasso (statistics)
+latency
+Latent diffusion model
+Latent space
+Latent variable
+Law of the iterated logarithm
+Law of truly large numbers
+layer
+Layer (deep learning)
+Layer (neural network)
+Layers API (tf.layers)
+LCN local contrast normalization
+Leabra
+leaf
+Leaky ReLU
+Leaky units
+learning
+Learning Interpretability Tool (LIT)
+learning rate
+Learning rule
+Learning vector quantization
+least privilege
+least squares regression
+Least-squares spectral analysis
+lemmatization
+LeNet
+Lepage test
+Lernmatrix
+Lesion network mapping
+Levene__apos__s test
+Levenshtein Distance
+Lie product formula
+Life-time of correlation
+Lift (data mining)
+Likelihood-ratio test
+Linde–Buzo–Gray algorithm
+Line search
+linear
+Linear algebra
+Linear combination
+Linear dependence
+Linear factor models
+linear model
+linear regression
+Link prediction
+Link-centric preferential attachment
+LipNet
+Lipschitz constant
+Lipschitz continuous
+Liquid state machine
+liquid_state_machine
+List of numerical analysis topics
+List of probability distributions
+List of publications in data science
+List of statistical tests
+List of stochastic processes topics
+LIT
+LLM
+LLM evaluations (evals)
+local
+Local conditional probability distribution
+Local contrast normalization
+Local outlier factor
+Local time (mathematics)
+localization
+Location test
+Location testing for Gaussian scale mixture distributions
+Loewner order
+Log Loss
+log-odds
+Logarithm of a matrix
+Logarithmic norm
+Logic learning machine
+logistic model
+logistic regression
+Logistic sigmoid
+LogitBoost
+logits
+Long short-term memory
+Long Short-Term Memory (LSTM)
+Long-tail traffic
+Loop
+Loopy belief propagation
+LoRA
+Lorden__apos__s inequality
+loss
+loss aggregator
+loss curve
+loss function
+Loss functions for classification
+loss surface
+Low-Rank Adaptability (LoRA)
+Lp norm
+LSTM
+LSTM long short-term memory
+Lévy__apos__s stochastic area
+Lévy–Prokhorov metric
+M-step
+Machine learning
+machine observation
+machine translation
+Main diagonal
+majority class
+malware
+Manifold
+Manifold alignment
+Manifold hypothesis
+Manifold learning
+Manifold tangent classifier
+Manin matrix
+Mann–Whitney U test
+Mantel test
+MAP approximation
+Marchenko–Pastur distribution
+Marginal probability
+Marginal structural model
+Markov chain
+Markov chain central limit theorem
+Markov chain Monte Carlo
+Markov decision process (MDP)
+Markov network
+Markov operator
+Markov property
+Markov random field
+Martingale (probability theory)
+masked language model
+materiality
+Mathematical Biosciences Institute
+Mathematics of artificial neural networks
+matplotlib
+Matrix
+Matrix analytic method
+Matrix calculus
+Matrix completion
+Matrix decomposition
+Matrix determinant lemma
+Matrix exponential
+matrix factorization
+Matrix inverse
+Matrix mortality problem
+Matrix multiplication
+Matrix multiplication algorithm
+Matrix polynomial
+Matrix product
+Matrix ring
+Matrix semialgebra
+Matrix semiring
+Matrix sign function
+Matrix variate Dirichlet distribution
+Mauchly__apos__s sphericity test
+Max norm
+Max pooling
+Maximum likelihood
+Maxout
+MCMC Markov chain Monte Carlo
+McNamara fallacy
+Mean Absolute Error (MAE)
+mean average precision at k (mAP@k)
+Mean field
+Mean squared error
+Mean Squared Error (MSE)
+measurability
+Measure theory
+Measure zero
+measurement
+measurement method
+measurement model
+Median test
+Mediation (statistics)
+membership inference
+Memory network
+Memtransistor
+mesh
+meta-learning
+metadata
+Meter data management
+Method of steepest descent
+metric
+Metrics API (tf.metrics)
+Midjourney
+mini-batch
+mini-batch stochastic gradient descent
+Minibatch
+Minimal polynomial (linear algebra)
+minimax loss
+minimization
+Minimum degree algorithm
+Minimum redundancy feature selection
+Minor (linear algebra)
+minority class
+Missing inputs
+mixed methods
+Mixing (Markov chain)
+Mixture (probability)
+Mixture density networks
+Mixture distribution
+Mixture model
+Mixture of experts
+ML
+MLOPS
+MLP multilayer perception
+MMIT
+MNIST
+Mobile positioning data
+modality
+model
+model assertion
+Model averaging
+model capacity
+model card
+model cascading
+Model compression
+model debugging
+model decay
+model editing
+model extraction
+model governance
+Model identifiability
+model inventory
+model overlay
+model parallelism
+model risk management
+model router
+model suite
+model training
+model validation
+Model-based clustering
+Moderated mediation
+Modern Hopfield network
+Modified half-normal distribution
+Modified Kumaraswamy distribution
+MOE
+Molecule mining
+Moment closure
+Moment matching
+Momentum
+monitoring
+Moore-Penrose pseudoinverse
+Moore–Penrose inverse
+moral agency
+moral patiency
+Moralized graph
+Moran process
+MP-DBM multi-prediction DBM
+MRF (Markov Random Field)
+MSE mean squared error
+MT
+Multi expression programming
+Multi-agent reinforcement learning
+multi-class classification
+multi-class logistic regression
+multi-head self-attention
+Multi-modal learning
+Multi-model database
+Multi-prediction DBM
+Multi-surface method
+Multi-task learning
+Multifactor dimensionality reduction
+Multilayer perception
+Multilayer perceptron
+multimodal instruction-tuned
+Multimodal learning
+multimodal model
+multinomial classification
+Multinomial distribution
+multinomial regression
+Multinomial test
+multinoulli distribution
+Multiple kernel learning
+multitask
+Multivariate Laplace distribution
+Multivariate logistic distribution
+Multivariate logistic regression
+Multiway data analysis
+Mutual coherence (linear algebra)
+N-gram
+NADE
+naive Bayes
+NaN trap
+Nano
+Narrow escape problem
+Nat
+National Microbiology Data Center
+Natural filtration
+Natural image
+natural language processing
+natural language understanding
+Nearest neighbor regression
+Nearest neighbor search
+Necessary condition analysis
+negative class
+Negative definite
+Negative phase
+negative sampling
+Negative testing
+Nemenyi test
+Neocognitron
+Nesterov momentum
+Netflix Grand Prize
+Netomi
+NETtalk (artificial neural network)
+Netvibes
+Neural Architecture Search (NAS)
+Neural cryptography
+Neural language model
+neural network
+Neural network (machine learning)
+Neural network Gaussian process
+Neural operators
+Neural processing unit
+Neural radiance field
+Neural scaling law
+Neural style transfer
+Neural Turing machine
+neuron
+Neuroscience
+Newton’s method
+Neyman–Pearson lemma
+NLM neural language model
+NLP
+NLP natural language processing
+NLU
+No free lunch theorem
+no one right answer (NORA)
+node (decision tree)
+node (neural network)
+node (TensorFlow graph)
+Node2vec
+noise
+Noise-contrastive estimation
+non-binary condition
+Non-negative matrix factorization
+Non-parametric model
+non-response bias
+Nondestructive Evaluation 4.0
+nondiscrimination
+nonlinear
+Nonlinear modelling
+nonstationarity
+NORA
+Norm xiv
+Normal distribution
+Normal equations
+normal flow
+normalization
+Normalization (machine learning)
+Normalized initialization
+NoSQL
+Notebook LM
+NovelAI
+Novelty detection
+NSynth
+Nuisance variable
+Null model
+Nullity theorem
+Numerical analysis
+numerical data
+Numerical diﬀerentiation
+NumPy
+Numéraire
+Object detection
+Object recognition
+objective
+objective evidence
+objective function
+oblique condition
+Observable
+observation
+Observational Health Data Sciences and Informatics
+of probability
+offline
+offline inference
+offline learning
+Offset filtration
+Omnibus test
+OMPk orthogonal matching pursuit
+one right answer (ORA)
+One- and two-tailed tests
+one-hot encoding
+one-shot learning
+one-shot prompting
+one-vs.-all
+One-way analysis of variance
+online
+online inference
+online learning
+Online machine learning
+Onsager–Machlup function
+ontology
+opacity
+Open coding
+Open Data Indices
+Open Syllabus Project
+OPeNDAP
+Operation
+operation (op)
+Operational analytical processing
+operationalization
+operator
+Operator monotone function
+opt-in
+opt-out
+Optax
+Optimal matching
+Optimization
+optimizer
+ORA
+Ordered Key-Value Store
+Orthodoxstatistics
+Orthogonal matching pursuit
+Orthogonal matrix
+Orthogonal Procrustes problem
+Orthogonality
+Oscillator linewidth
+out-group homogeneity bias
+Out-of-bag error
+out-of-bag evaluation (OOB evaluation)
+outcome
+outlier
+outlier detection
+outliers
+Outline of linear algebra
+Outline of machine learning
+Outline of statistics
+output
+output layer
+overfitting
+oversampling
+P-matrix
+P-rep
+package
+packed data
+Page__apos__s trend test
+Paired difference test
+Pairwise error probability
+PaLM
+pandas
+Parallel distributed processing
+parameter
+Parameter initialization
+Parameter Server (PS)
+Parameter sharing
+Parameter tying
+parameter update
+parameter-efficient tuning
+parametric
+Parametric model
+Parametric ReLU
+parent process
+parity
+Park test
+partial derivative
+Partial inverse of a matrix
+participant
+participation
+participation bias
+Partition function
+partitioning strategy
+Pascal__apos__s wager
+pass at k (pass@k)
+passive learning agent
+Pathways Language Model (PaLM)
+PatientsLikeMe
+Pax
+PCA principal components analysis
+PCD stochastic maximum likelihood
+perceptron
+performance
+Permanent (mathematics)
+Permutation test
+permutation variable importances
+perplexity
+Perron–Frobenius theorem
+Persistence barcode
+Persistence module
+Persistent Betti number
+Persistent contrastive divergence
+Persistent homology group
+Persistent random walk
+personal data
+Perturbationanalysis
+Peter Henrici Prize
+Phenomenological model
+Phillips–Perron test
+Photoanalysis
+Physics-informed neural networks
+pipeline
+pipelining
+Pitman–Yor process
+Pivot table
+pjit
+PLM
+pmap
+Poincaré separation theorem
+Point estimator
+Poisson boundary
+Poisson-Dirichlet distribution
+Polar decomposition
+policy
+Policy gradient method
+Polynomial chaos
+pooling
+positional encoding
+positionality
+positive class
+Positive definite
+Positive phase
+Possibility theory
+Post hoc analysis
+post-hoc explanation
+post-processing
+post-processing algorithm
+post-trained model
+PR AUC (area under the PR curve)
+practical significance
+Praxis
+pre-processing algorithm
+pre-trained model
+pre-training
+precision
+Precision (of a normal distribution)
+precision at k (precision@k)
+precision-recall curve
+Predictable process
+Predictable stopping time
+Predictable σ-algebra
+prediction
+prediction bias
+predictive analysis
+Predictive analytics
+predictive ML
+Predictive modelling
+predictive parity
+predictive rate parity
+Predictive sparse decomposition
+Prefrontal cortex basal ganglia working memory
+Pregaussian class
+preprocessing
+Prescription monitoring program
+Prescriptive analytics
+Pretraining
+Primary visual cortex
+Principal components analysis
+Principal stratification
+Principle of indifference
+prior belief
+Prior probability distribution
+privacy
+privacy-by-design
+privacy-enhancing technology
+privileged protected attribute
+Pro
+Probabilistic argumentation
+Probabilistic max pooling
+Probabilistic metric space
+Probabilistic PCA
+probabilistic regression model
+Probability axioms
+Probability density function
+Probability distribution
+Probability interpretations
+Probability management
+Probability mass function
+Probability mass function estimation
+Probability theory
+Probability vector
+ProbOnto
+procedure
+process
+process flow
+processing
+processing environment
+processor
+product manager
+Product of experts
+product owner
+Product rule of probability
+Productive matrix
+productization
+profiling
+Profiling (information science)
+Progressively measurable process
+prompt
+prompt design
+Prompt engineering
+prompt tuning
+prompt-based learning
+protected attribute
+protected class
+prototype
+Prototype methods
+provisioning
+Proximal policy optimization
+proxy
+proxy (sensitive attributes)
+proxy labels
+PSD predictive sparse decomposition
+pseudo-anonymization (pseudonymization)
+Pseudolikelihood
+pure function
+PVLV
+Q-function
+Q-Gaussian process
+Q-learning
+Q-matrix
+Q-RASAR
+QST (genetics)
+Quadratic unconstrained binary optimization
+Quadratic variation
+Quadrature pair
+Qualitative comparative analysis
+quality
+quantile
+quantile bucketing
+quantization
+Quasi-Newton methods
+Quasi-stationary distribution
+Quasideterminant
+Query-level feature
+Question answering
+queue
+Quickprop
+R-squared
+racialized
+Radial basis function
+Radial basis function network
+Radical probabilism
+RAG
+Raleigh plot
+RAMnets
+Ramsey RESET test
+Random dynamical system
+Random Fibonacci sequence
+random forest
+Random mapping
+Random matrix
+Random measure
+random policy
+Random search
+Random variable
+Random walk
+Random walk hypothesis
+Randomized weighted majority algorithm
+Randomness test
+rank (ordinality)
+rank (Tensor)
+Rank test
+ranking
+Rasch model
+rater
+Ratio matching
+RBF
+RBM restricted Boltzmann machine
+re-ranking
+Real-time data
+recall
+recall at k (recall@k)
+Receiver operating characteristic
+Receptive field
+recognition
+Recognition Challenge
+recommendation system
+Recommender Systems
+rectification
+Rectified Gaussian distribution
+Rectified linear unit
+Rectified Linear Unit (ReLU)
+Recurrence period density entropy
+Recurrent network
+recurrent neural network
+Recursive self-improvement
+red-team
+reference class
+reference text
+reflexivity
+Regenerative process
+Region Based Convolutional Neural Networks
+regression
+regression model
+Regular distribution (economics)
+regularization
+regularization rate
+Regularizer
+Reification (statistics)
+REINFORCE
+Reinforcement learning
+Reinforcement learning from human feedback
+Reinforcement Learning from Human Feedback (RLHF)
+Relational database
+Relations
+Relative likelihood
+reliability
+ReLU
+remediation
+Reparametrization trick
+replay buffer
+replica
+reporting bias
+representation
+Representation learning
+Representational capacity
+Representations from Transformers)
+reproducibility
+requirement
+residual
+Residual neural network
+resilience
+Resource-dependent branching process
+response
+Response modeling methodology
+responsible AI
+Restricted Boltzmann machine
+result
+retention limit
+retrieval-augmented generation (RAG)
+return
+reward
+Rexer__apos__s Annual Data Miner Survey
+Ridge regression
+ridge regularization
+Right-continuous filtration
+risk
+risk control
+Risk of ruin
+risk tolerance
+Risk-limiting audit
+RNN
+RNN-RBM
+robotic desktop automation (RDA)
+robotic process automation (RPA)
+robust AI
+robustness
+ROC (receiver operating characteristic) Curve
+role prompting
+root
+root directory
+Root Mean Squared Error (RMSE)
+root-mean-square deviation (RMSD)
+rotational invariance
+Rouché–Capelli theorem
+ROUGE (metric)
+ROUGE (Recall-Oriented Understudy for Gisting Evaluation)
+ROUGE-L
+ROUGE-N
+ROUGE-S
+Rough path
+Round-robin test
+row
+Rprop
+Rubin causal model
+Rule-based machine learning
+Saddle points
+safety
+Sample mean
+sampling bias
+sampling with replacement
+Sargan–Hansen test
+SavedModel
+Saver
+scalability
+scalar
+scaling
+Scheirer–Ray–Hare test
+Schur decomposition
+Schur product theorem
+Schur–Horn theorem
+Science and technology in Spain
+scikit-learn
+score
+Score matching
+Score test
+scoring
+screen out
+Second derivative
+Second derivative test
+security
+Security visualisation
+segmentation
+selection bias
+self-attention (also called self-attention layer)
+self-aware system
+self-diagnosis
+self-healing system
+Self-information
+Self-organizing map
+Self-play
+self-supervised learning
+self-training
+Semantic hashing
+semantic mapping
+Semblance analysis
+semi-supervised learning
+sensitive attribute
+sensitivity analysis
+sensory digitization
+sentiment analysis
+Separable convolution
+Separation (probabilistic modeling)
+Separation test
+Sequence analysis in social sciences
+sequence model
+sequence-to-sequence task
+Sequential decision making
+Sequential pattern mining
+Sequential probability ratio test
+Seriation (statistics)
+service
+serving
+SESRI
+Session (web analytics)
+Set xii
+Set-theoretic limit
+SGD stochastic gradient descent
+shallow learning
+Shannon entropy xiii
+shape (Tensor)
+shard
+Sherman–Morrison formula
+Shortlist
+shrinkage
+side-by-side evaluation
+Siegel–Tukey test
+Sigmoid belief network
+sigmoid function
+Sigmoid xiv
+Sign test
+signal detection theory
+similarity measure
+Simple cell
+single program / multiple data (SPMD)
+Single-particle trajectory
+Singular value decomposition
+Singular value singular value decomposition
+Sinkhorn__apos__s theorem
+situational awareness
+size invariance
+sketching
+Skill chaining
+skip-gram
+Slow feature analysis
+SMAWK algorithm
+Smith normal form
+SML stochastic maximum likelihood
+Sobel test
+Social data science
+Social media mining
+Social physics
+Social profiling
+Society 5.0
+socio-technical system
+soft prompt tuning
+softmax
+Softplus
+Software mining
+software testing
+Spam detection
+Spark (mathematics)
+Sparse coding
+Sparse dictionary learning
+sparse feature
+Sparse Fourier transform
+Sparse graph code
+Sparse initialization
+Sparse PCA
+sparse representation
+sparse vector
+sparsity
+Spatial embedding
+Spearman__apos__s rank correlation coefficient
+Spearmint
+Specht__apos__s theorem
+Special Interest Group on Knowledge Discovery and Data Mining
+specification
+Spectral abscissa
+Spectral radius
+Spectral theorem
+Spectrum of a matrix
+Speech recognition
+Spike and slab restricted Boltzmann maSPN
+splitter
+SPMD
+Spread of a matrix
+Square matrix
+squared hinge loss
+squared loss
+Squared ranks test
+ssRBM spike and slab restricted Boltzmann machine
+Stable Diffusion
+staged training
+stakeholder
+standard deviation
+Standard error
+Standard error of the mean
+start event
+state
+state-action value function
+State–action–reward–state–action
+static
+static inference
+stationarity
+Statistic
+statistical bias
+Statistical interference
+Statistical learning theory
+Statistical model
+Statistical model specification
+Statistical model validation
+Statistical Modelling Society
+statistical parity
+statistical significance
+Statistical thinking
+Statistics
+Steepest descent
+step
+step size
+stereotype
+Stochastic
+Stochastic analysis on manifolds
+Stochastic gradient descent
+stochastic gradient descent (SGD)
+stochastic maximum likelihood
+Stochastic parrot
+Stochastic pooling
+Stochastic process
+Stochastic thermodynamics
+Stochastic variance reduction
+Stochasticback-propagation
+straight-through processing (STP)
+strawperson
+stress test
+stride
+Struc2vec
+Structural break test
+structural risk minimization (SRM)
+Structure learning
+Structure mining
+structured data
+Structured kNN
+Structured output
+Structured probabilistic model
+Student__apos__s t-test
+Sub-probability measure
+sub-process
+Subdivision bifiltration
+subword token
+Sum rule of probability
+sum-product network
+summary
+Supervised fine-tuning
+Supervised learning
+supervised machine learning
+Support vector machine
+support vector machines
+Surrogate data testing
+Surrogate loss function
+Surveillance capitalism
+SVD singular value decomposition
+Symbolic data analysis
+Symmetric matrix
+Synqera
+Synthetic control method
+synthetic feature
+system
+system of systems
+systemic bias
+T-distributed stochastic neighbor embedding
+T5
+T5X
+tabular Q-learning
+Tajima__apos__s D
+Tangent distance
+Tangent plane
+Tangent prop
+tanh
+target
+Target (project)
+target network
+task
+Task Force on Process Mining
+taxonomy
+TD-Gammon
+TDNN time-delay neural network
+Teacher forcing
+technical control
+technochauvinism
+Technology mining
+temperature
+Tempering
+Template matching
+temporal data
+Temporal difference learning
+Tensor
+Tensor Processing Unit (TPU)
+Tensor rank
+Tensor shape
+Tensor size
+TensorBoard
+TensorFlow
+TensorFlow Playground
+TensorFlow Serving
+TensorStore
+termination condition
+Terms
+test
+Test and Evaluation, Verification and Validation (TEVV)
+test loss
+test set
+text span
+Text-to-image personalization
+tf.Example
+tf.keras
+The Algebraic Eigenvalue Problem
+The Emotion Machine
+The Groundwork
+The Mathematics of Games and Gambling
+The Resilience Project
+third party
+three lines of defense
+threshold (for decision trees)
+TidyTuesday
+Tikhonov regularization weight decay
+Tiled convolution
+time series analysis
+Time-delay neural network
+timestep
+Toeplitz matrix
+token
+tokenizer
+top-k accuracy
+Topographic ICA
+Topological data analysis
+Topological deep learning
+Total correlation
+Total operating characteristic
+Total variation distance of probability measures
+tower
+toxicity
+Toy problem
+Toyota Connected North America
+TPU
+TPU chip
+TPU device
+TPU node
+TPU Pod
+TPU resource
+TPU slice
+TPU type
+TPU worker
+Trace operator
+traceability
+training
+training data
+Training error
+training loss
+training set
+training-serving skew
+trajectory
+transaction
+Transcription
+transfer learning
+Transformer
+Transition kernel
+translational invariance
+transparency
+Transpose xii
+Triangle inequality
+Triangulated graph chordal graph
+trick
+trigram
+Triplet loss
+true negative
+true negative (TN)
+true positive
+true positive (TP)
+true positive rate (TPR)
+trust
+trustworthiness
+trustworthy AI
+TTL
+Tukey__apos__s range test
+Tukey__apos__s test of additivity
+Tukey–Duckworth test
+ture
+Two-proportion Z-test
+Twyman__apos__s law
+type I error
+type II error
+Typical set
+Ultra
+unawareness (to a sensitive attribute)
+Unbiased
+Uncertain data
+uncertainty
+underfitting
+underrepresentation
+undersampling
+Undirected graphical model
+Undirected model
+unexplainable
+Unicity (data analysis)
+unidirectional
+unidirectional language model
+Uniform distribution
+Unigram
+Unit measure
+Unit norm
+Unit vector
+Universal approximation theorem
+Universal approximator
+unlabeled example
+Unnormalized probability distribution
+unstructured data
+Unsupervised learning
+unsupervised machine learning
+Unsupervised pretraining
+uplift modeling
+upweighting
+usability
+usability testing
+user
+user matrix
+user-centered design
+Usual hypotheses
+V
+V-structure
+VAE variational autoencoder
+validation
+validation loss
+validation set
+value imputation
+value sensitive design
+Van der Waerden test
+vanishing gradient problem
+Vapnik-Chervonenkis dimension
+variable
+variable importances
+variance
+Variational autoencoder
+variational autoencoder (VAE)
+Variational derivatives
+Variational free energy
+VC Vapnik-Chervonenkis dimension
+vector
+Vector quantization
+Venice Time Machine
+verifiable
+Vertex
+vibe coding
+Vietoris–Rips filtration
+Virtual adversarial examples
+Visible layer
+Vision-language-action model
+Visual analytics
+Visual inspection
+Volumetric data
+Vote counting
+Vuong__apos__s closeness test
+W-test
+Wake-sleep
+Wake-sleep algorithm
+Wald test
+Wald__apos__s equation
+Wald–Wolfowitz runs test
+Wasserstein GAN
+Wasserstein loss
+Web intelligence
+weight
+Weight decay
+Weight initialization
+Weight space symmetry
+Weighted Alternating Least Squares (WALS)
+Weighted correlation network analysis
+Weighted majority algorithm (machine learning)
+weighted sum
+Weights
+Welch__apos__s t-test
+White test
+Whitening
+Whittle likelihood
+wide model
+Wiener connector
+Wikibase
+Wilcoxon signed-rank test
+Wilks__apos__ theorem
+wisdom of the crowd
+With high probability
+word embedding
+Word-sense disambiguation
+WordNet
+Work 4.0
+Wrapper (data mining)
+xi xii
+xiii
+xiv
+XLA (Accelerated Linear Algebra)
+You Only Look Once
+Z-score normalization
+Z-test
+Zero degrees of freedom
+Zero-shot learning
+zero-shot prompting
+Zero–one law
+Zettabyte Era
+Ε-net (computational geometry)

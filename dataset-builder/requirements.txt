@@ -1,0 +1,17 @@
+
+# Core
+numpy
+pandas
+scikit-learn
+scipy
+tqdm
+pyyaml
+
+# NLP + IR
+rank-bm25
+
+# Transformers and embeddings
+transformers
+sentence-transformers
+accelerate
+tokenizers

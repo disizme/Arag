@@ -1,0 +1,44 @@
+
+paths:
+  ai_corpus: data/corpus/ai_ml_corpus.jsonl
+  general_corpus: # Optional - leave empty or remove if no general corpus
+  questions: data/preprocessed_datasets
+  output_dir: data/processed
+  artifacts_dir: data/artifacts
+  lexicon_path: data/resources/ai_ml_lexicon.txt
+
+retrieval:
+  top_k: 5
+  bm25:
+    use_title: true
+  vector:
+    embedding_model: sentence-transformers/all-MiniLM-L6-v2 #intfloat/e5-small-v2
+    normalize: true
+    batch_size: 128  # Increased for better throughput
+
+models:
+  cross_encoder: cross-encoder/stsb-distilroberta-base
+  text_gen_model: google/flan-t5-base  # For answer deviation - alternatives: microsoft/DialoGPT-small, google/flan-t5-base
+
+weak_labeling:
+  hallucination:
+    thresholds:
+      factual_precision_risk_high_risk: 0.3  # Cross-encoder threshold for combined factual/precision risk
+      obscurity_risk_high_risk: 0.3          # Cross-encoder threshold for obscurity risk
+      complexity_risk_high_risk: 0.3         # Cross-encoder threshold for complexity risk
+      answer_deviation_high_risk: 0.7        # Semantic deviation threshold (higher = more risk)
+  domain:
+    thresholds:
+      lexicon_high: 0.01      # Lower threshold for more lenient lexicon matching
+      embedding_sim_high: 0.25  # Lower threshold for embedding similarity
+      bm25_ratio_high: 40     # Lower threshold for BM25 ratio
+      cross_encoder_high: 0.3  # Lower threshold for cross-encoder
+
+aggregation:
+  seed: 42
+
+splits:
+  seed: 42
+  val_ratio: 0.1
+  test_ratio: 0.1
+  group_by_source: true
