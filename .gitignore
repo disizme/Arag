@@ -57,7 +57,8 @@ cover/
 .kreuzberg/
 debug*.py
 adaptive_agents/models/saved_models/
-
+adaptive_agents/datasets/
+dataset-builder/*/*/*.json
 # Translations
 *.mo
 *.pot

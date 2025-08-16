@@ -25,6 +25,8 @@ langchain
 langchain-experimental
 langchain-community
 langchain-ollama
+requests
+beautifulsoup4
 
 #LLM Integration
 ollama

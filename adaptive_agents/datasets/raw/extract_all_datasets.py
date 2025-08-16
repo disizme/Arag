@@ -39,7 +39,7 @@ class UnifiedDatasetExtractor:
         files_to_process = []
         for file_path in self.current_dir.iterdir():
             if (file_path.is_file() and 
-                file_path.name not in ["extract_all_datasets.py", "extract_datasets.py", "extract_ambigqa.py"] and
+                file_path.name in ["extract_all_datasets.py", "extract_datasets.py", "extract_ambigqa.py"] and
                 not file_path.name.startswith('.')):
                 files_to_process.append(file_path)
         

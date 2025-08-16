@@ -41,13 +41,13 @@ from sklearn.metrics import (
     f1_score,
     mean_squared_error,
     mean_absolute_error,
+    precision_score,
+    recall_score,
 )
 from transformers import (
     AutoTokenizer,
     TrainingArguments,
-    Trainer,
     EarlyStoppingCallback,
-    DataCollatorWithPadding,
     set_seed,
     AutoModelForSequenceClassification,
 )
@@ -89,6 +89,7 @@ class HallucinationPredictor:
         resume_from_checkpoint: bool = True,
         class_weights: List[float] = None,
         agent_type: str = "hallucination",
+        loss_type: str = "ce",
     ):
         """
         Initialize the hallucination predictor trainer.
@@ -99,7 +100,7 @@ class HallucinationPredictor:
         self.seed = seed
         set_seed(seed)
         if output_dir is None:
-            output_dir = f"../models/saved_models/{agent_type}_predictor_updated"
+            output_dir = f"../models/saved_models/{agent_type}_predictor_test_{loss_type}"
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.cache_dir = Path(cache_dir) if cache_dir else None
@@ -193,27 +194,30 @@ class HallucinationPredictor:
         val_dataset = Dataset.from_list(val_data)
         test_dataset = Dataset.from_list(test_data)
         logger.info("[TOKENIZATION] Tokenizing datasets...")
-        
+        remove_columns = ["id","question", "answer", "reason", "source", "score"]
         train_dataset = train_dataset.map(
             self.tokenize_data,
             batched=True,
             desc="Tokenizing train",
+            remove_columns=remove_columns,
         )
         val_dataset = val_dataset.map(
             self.tokenize_data,
             batched=True,
             desc="Tokenizing validation",
+            remove_columns=remove_columns,
         )
         test_dataset = test_dataset.map(
             self.tokenize_data,
             batched=True,
-            desc="Tokenizing test",
+            desc="Tokenizing test", 
+            remove_columns=remove_columns,
         )
 
         datasets = DatasetDict(
             {"train": train_dataset, "validation": val_dataset, "test": test_dataset}
         )
-        logger.info("[DATASETS] Prepared tokenized datasets")
+        logger.info(f"[DATASETS] Prepared tokenized datasets: {datasets}")
         return datasets
 
     def compute_metrics(self, eval_pred):
@@ -226,12 +230,12 @@ class HallucinationPredictor:
         # Convert to actual scores (0.0-1.0)
         pred_scores = pred_classes / 10.0  # 7 → 0.7
         true_scores = labels / 10.0   # 7 → 0.7
-
         metrics = {
             "accuracy": accuracy_score(labels, pred_classes),
             "f1_weighted": f1_score(labels, pred_classes, average='weighted'),
-            
+            "recall": recall_score(labels, pred_classes, average='weighted'),
             # Score-based metrics (converted back to 0-1 range)
+            "mse": mean_squared_error(true_scores, pred_scores),
             "mae": mean_absolute_error(true_scores, pred_scores),
             "rmse": np.sqrt(mean_squared_error(true_scores, pred_scores)),
         }
@@ -270,6 +274,7 @@ class HallucinationPredictor:
         fp16: bool = None,  # Enable mixed precision training (auto-detect if None)
         dataloader_num_workers: int = 0,  # Number of workers for data loading
         resume_from_checkpoint: Optional[str] = None,  # Resume from checkpoint if provided
+        loss_type: str = "ce",  # 'ce' or 'emd'
     ) -> Dict:
         """
         Train the hallucination prediction model.
@@ -294,7 +299,10 @@ class HallucinationPredictor:
             else:
                 fp16 = False
 
-        logger.info("[LOSS] Using standard MSE Loss")
+        if loss_type.lower() == "emd":
+            logger.info("[LOSS] Using ordinal EMD loss")
+        else:
+            logger.info("[LOSS] Using Cross-Entropy loss")
         
         training_args = TrainingArguments(
             output_dir=str(self.output_dir),
@@ -325,6 +333,7 @@ class HallucinationPredictor:
         
         self.trainer = WeightedTrainer(
             class_weights=self.class_weights,
+            loss_type=loss_type,
             model=self.model,
             args=training_args,
             train_dataset=datasets["train"],
@@ -389,6 +398,7 @@ class HallucinationPredictor:
         logger.info(f"  Test Accuracy: {test_results.get('test_accuracy', 0):.4f}")
         logger.info(f"  Test F1 Weighted: {test_results.get('test_f1_weighted', 0):.4f}")
         logger.info(f"  Test MAE: {test_results.get('test_mae', 0):.4f}")
+        logger.info(f"  Test MSE: {test_results.get('test_mse', 0):.4f}")
         logger.info(f"  Test RMSE: {test_results.get('test_rmse', 0):.4f}")
         logger.info(
             f"  Training time: {train_result.metrics.get('train_runtime', 0):.1f}s"
@@ -409,7 +419,8 @@ def train_hallucination_predictor(
     eval_steps: int = 250,
     logging_steps: int = 50,
     resume_from_checkpoint: bool = True,
-    **kwargs,
+    loss_type: str = "ce",
+    **kwargs
 ) -> Dict:
     """
     Convenience function to train hallucination predictor.
@@ -421,6 +432,7 @@ def train_hallucination_predictor(
     - distilbert-base-uncased: Fastest training
     - bert-base-uncased: Reliable baseline
     """
+
     init_kwargs = {
         k: v
         for k, v in kwargs.items()
@@ -450,6 +462,7 @@ def train_hallucination_predictor(
     predictor = HallucinationPredictor(
         model_name=model_name,
         resume_from_checkpoint=resume_from_checkpoint,
+        loss_type=loss_type,
         **init_kwargs,
     )
     logger.info("Preparing datasets...")
@@ -461,8 +474,8 @@ def train_hallucination_predictor(
     )
 
     # Train model
-    results = predictor.train(
-        datasets=datasets,
+"""     results = predictor.train(
+          datasets=datasets,
         learning_rate=learning_rate,
         num_epochs=num_epochs,
         batch_size=batch_size,
@@ -473,10 +486,11 @@ def train_hallucination_predictor(
         save_steps=save_steps,
         eval_steps=eval_steps,
         logging_steps=logging_steps,
+        loss_type=loss_type,
         **train_kwargs,
-    )
+    ) """
 
-    return results
+    #return results
 
 
 def main():
