@@ -99,7 +99,6 @@ def build_dataset(cfg: Config) -> None:
 
     hall = HallucinationLabelers(
         cross_encoder=str(cfg.get("models", "cross_encoder")),
-        text_gen_model=str(cfg.get("models", "text_gen_model")),
     )
     dom = DomainLabelers(
         embedding_model=str(cfg.get("retrieval", "vector", "embedding_model")),
@@ -143,7 +142,7 @@ def build_dataset(cfg: Config) -> None:
                     "factual_precision_risk": hall_signals.factual_precision_risk,
                     "obscurity_risk": hall_signals.obscurity_risk,
                     "complexity_risk": hall_signals.complexity_risk,
-                    "answer_deviation": hall_signals.answer_deviation,
+                    #"answer_deviation": hall_signals.answer_deviation,
                 },
                 "votes": hall_votes,
             })
@@ -156,7 +155,7 @@ def build_dataset(cfg: Config) -> None:
         r["score"] = round(float(p_dom[i]), 2)
 
     if rows_hallu:
-        hall_labelers = ["factual_precision", "obscurity", "complexity", "answer_dev"]
+        hall_labelers = ["factual_precision", "obscurity", "complexity"] #"answer_dev"
         L_h = build_label_matrix([r["votes"] for r in rows_hallu], hall_labelers)
         
         p_h = aggregate_probabilities(L_h, seed=int(cfg.get("aggregation", "seed", default=42)))

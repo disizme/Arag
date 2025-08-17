@@ -14,10 +14,10 @@ class HallucinationSignals:
     factual_precision_risk: float
     obscurity_risk: float
     complexity_risk: float
-    answer_deviation: float
+    #answer_deviation: float
 
 class HallucinationLabelers:
-    def __init__(self, cross_encoder: str, text_gen_model: str):
+    def __init__(self, cross_encoder: str):
         # Use MPS device if available, fallback to CPU
         device = "mps" if torch.backends.mps.is_available() else "cpu"
         
