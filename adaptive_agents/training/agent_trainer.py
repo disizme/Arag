@@ -9,7 +9,7 @@ Features:
 - Supports multiple architectures (DeBERTa, RoBERTa, DistilBERT, BERT)
 - Comprehensive evaluation metrics and model checkpointing
 - Configurable training parameters with early stopping
-- Detailed logging and classification reports
+- Detailed logging and regression reports
 
 Alternative model suggestions:
 - microsoft/deberta-v3-base: Best performance, recommended for production
@@ -75,14 +75,14 @@ class HallucinationPredictor:
     Advanced hallucination prediction model trainer.
 
     Trains transformer models to predict hallucination risk from query text.
-    Supports binary and multi-class classification with comprehensive evaluation.
+    Supports regression with comprehensive evaluation.
     """
 
     def __init__(
         self,
         model_name: str = "microsoft/deberta-v3-base",
         output_dir: str = None,
-        num_labels: int = 11,    # Number of labels (1 for regression)
+        num_labels: int = 1,    # Number of labels (1 for regression)
         max_length: int = 512,  # Maximum sequence length for tokenization
         cache_dir: str = None,  # Directory for caching downloaded models
         seed: int = 42,         # Random seed for reproducibility
@@ -121,7 +121,8 @@ class HallucinationPredictor:
 
     def load_dataset(self, agent_type: str) -> List[Dict]:
         """Load hallucination dataset."""
-        dataset_path = self.datasets_dir / f"processed_{agent_type}_dataset.json"
+        data_file = "domain_relevance_dataset.json" if agent_type == "specialization" else "hallucination_risk_dataset.json"
+        dataset_path = self.datasets_dir / data_file
         if not dataset_path.exists():
             raise FileNotFoundError(f"Dataset not found: {dataset_path}")
         with open(dataset_path, "r", encoding="utf-8") as f:
@@ -223,21 +224,13 @@ class HallucinationPredictor:
     def compute_metrics(self, eval_pred):
         """Compute regression evaluation metrics for 0-1 score prediction."""
         predictions, labels = eval_pred
-        
-        # Get predicted classes (0-10)
-        pred_classes = np.argmax(predictions, axis=1)
-        
-        # Convert to actual scores (0.0-1.0)
-        pred_scores = pred_classes / 10.0  # 7 → 0.7
-        true_scores = labels / 10.0   # 7 → 0.7
+        predictions = predictions.flatten() # Convert to 1D array
+        labels = labels.flatten() 
         metrics = {
-            "accuracy": accuracy_score(labels, pred_classes),
-            "f1_weighted": f1_score(labels, pred_classes, average='weighted'),
-            "recall": recall_score(labels, pred_classes, average='weighted'),
-            # Score-based metrics (converted back to 0-1 range)
-            "mse": mean_squared_error(true_scores, pred_scores),
-            "mae": mean_absolute_error(true_scores, pred_scores),
-            "rmse": np.sqrt(mean_squared_error(true_scores, pred_scores)),
+            "mse": mean_squared_error(labels, predictions),
+            "mae": mean_absolute_error(labels, predictions),
+            "rmse": np.sqrt(mean_squared_error(labels, predictions)),
+            "r2": 1 - (np.sum((labels - predictions) ** 2) / np.sum((labels - np.mean(labels)) ** 2))
         }
         return metrics
 
@@ -247,21 +240,22 @@ class HallucinationPredictor:
             return
         self.model = AutoModelForSequenceClassification.from_pretrained(
             self.model_name,
-            num_labels=11,
+            num_labels=1,
+            problem_type="regression"
             cache_dir=self.cache_dir
         )
         if self.tokenizer is not None:
             self.model.resize_token_embeddings(len(self.tokenizer))
         logger.info(f"[MODEL] Loaded regression model: {self.model_name}")
         logger.info(f"  Parameters: {self.model.num_parameters():,}")
-        logger.info("  Score outputs: 11 (classification 0-10)")
-        logger.info("  Problem type: Single-label Classification")
+        logger.info("  Score outputs: 1 (regression [0-1])")
+        logger.info("  Problem type: Regression")
 
     def train(
         self,
         datasets: DatasetDict,  # DatasetDict with train/validation/test splits
-        learning_rate: float = 2e-05,   # Learning rate for optimization
-        num_epochs: int = 1,    # Number of training epochs
+        learning_rate: float = 1e-5,   # Learning rate for optimization
+        num_epochs: int = 15,    # Number of training epochs
         batch_size: int = 4,    # Training batch size
         eval_batch_size: int = 4,  # Evaluation batch size
         warmup_ratio: float = 0.1,  # Proportion of steps for learning rate warmup
@@ -318,8 +312,8 @@ class HallucinationPredictor:
             eval_strategy="steps",
             save_strategy="steps",
             save_total_limit=3,
-            metric_for_best_model="eval_accuracy",
-            greater_is_better=True,
+            metric_for_best_model="eval_los",
+            greater_is_better=False,
             load_best_model_at_end=load_best_model,
             report_to="none",
             push_to_hub=False,
@@ -395,11 +389,10 @@ class HallucinationPredictor:
         with open(results_path, "w") as f:
             json.dump(results, f, indent=2, default=str)
         logger.info("[TRAINING] Training completed successfully!")
-        logger.info(f"  Test Accuracy: {test_results.get('test_accuracy', 0):.4f}")
-        logger.info(f"  Test F1 Weighted: {test_results.get('test_f1_weighted', 0):.4f}")
-        logger.info(f"  Test MAE: {test_results.get('test_mae', 0):.4f}")
         logger.info(f"  Test MSE: {test_results.get('test_mse', 0):.4f}")
+        logger.info(f"  Test MAE: {test_results.get('test_mae', 0):.4f}")
         logger.info(f"  Test RMSE: {test_results.get('test_rmse', 0):.4f}")
+        logger.info(f"  Test R2: {test_results.get('test_r2', 0):.4f}")
         logger.info(
             f"  Training time: {train_result.metrics.get('train_runtime', 0):.1f}s"
         )
@@ -509,7 +502,7 @@ def main():
         base_config = {
             "model_name": "microsoft/deberta-v3-base",
             "num_labels": 1,
-            "learning_rate": 2e-05,
+            "learning_rate": 1e-05,
         }
         if args.test:
             logger.info("🧪 TESTING MODE: Using lower values for quick testing")
@@ -526,10 +519,10 @@ def main():
         logger.info(
             "======================================================================"
         )
-        logger.info(f"Final Test Accuracy: {results['test_results'].get('test_accuracy', 0):.4f}")
-        # Accuracy 0.7-0.8
-        logger.info(f"Final Test F1 Weighted: {results['test_results'].get('test_f1_weighted', 0):.4f}")
-        # F1 Score 0.7-0.8
+        logger.info(f"Final Test MSE: {results['test_results'].get('test_mse', 0):.4f}")
+        # MSE 0.01-0.02
+        logger.info(f"Final Test R2: {results['test_results'].get('test_r2', 0):.4f}")
+        # R2 0.7-0.8
         logger.info(f"Final Test MAE: {results['test_results'].get('test_mae', 0):.4f}")
         # MAE 0.1-0.2
         logger.info(f"Final Test RMSE: {results['test_results'].get('test_rmse', 0):.4f}")
@@ -543,6 +536,7 @@ def main():
 
 if __name__ == "__main__":
     try:
+        # Usage: python agent_trainer.py --test --agent-type specialization/hallucination
         main()
         logger.info(f"Log file saved: {log_file}")
     finally:

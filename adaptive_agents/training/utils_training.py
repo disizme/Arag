@@ -23,26 +23,18 @@ logger = logging.getLogger(__name__)
 # Global flag to prevent multiple logging setups
 _logging_configured = False
 
-class WeightedTrainer(Trainer):
-    def __init__(self, class_weights=None, **kwargs):
+class RegressionTrainer(Trainer):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.class_weights = class_weights
     
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        labels = inputs.get("labels")
+        labels = inputs.get("labels").float()
         outputs = model(**inputs)
-        logits = outputs.get('logits')
-        
-        # Calculate class weights if not provided
-        if self.class_weights is None:
-            # You can compute weights from your training data
-            loss_fct = torch.nn.CrossEntropyLoss()
-        else:
-            weights = torch.tensor(self.class_weights, dtype=torch.float).to(logits.device)
-            loss_fct = torch.nn.CrossEntropyLoss(weight=weights)
-        
-        loss = loss_fct(logits.view(-1, 11), labels.view(-1))
+        logits = outputs.get('logits').squeeze() # Remove extra dimension
+        loss_fn = torch.nn.MSELoss()
+        loss = loss_fn(logits, labels)
         return (loss, outputs) if return_outputs else loss
+
 
 def setup_training_logging(script_name: str):
     """
@@ -176,7 +168,7 @@ def create_data_splits(
     if stratify:
         try:
             # 11 unique scores in the dataset 0.0 to 1.0
-            stratify_col = pd.qcut(df[label_key], q=11, labels=False, duplicates='drop')
+            stratify_col = pd.qcut(df[label_key], q=5, labels=False, duplicates='drop')
         except (ValueError, TypeError):
             stratify_col = None
     else:
@@ -195,7 +187,7 @@ def create_data_splits(
         temp_df,
         test_size=test_size / (val_size + test_size),
         random_state=seed,
-        stratify=temp_df[label_key] if stratify else None,
+        stratify=None,
         shuffle=True
     )
     
@@ -277,18 +269,20 @@ def get_production_config():
         "test_size": 0.15,
         
         # Training parameters
-        "num_epochs": 30,
-        "batch_size": 16,
+        "num_epochs": 15,
+        "batch_size": 8,
         "eval_batch_size": 16,
         "save_steps": 100,
         "eval_steps": 50,
         "logging_steps": 50,
         
-        
         # Other parameters
-        "early_stopping_patience": 5,
+        "early_stopping_patience": 3,
+        "learning_rate": 1e-5,
         "warmup_ratio": 0.1,
-        "weight_decay": 0.01
+        "weight_decay": 0.01,
+        "max_grad_norm": 1.0,
+        "lr_scheduler_type": "cosine"
     }
 
 def setup_argument_parser(script_name: str = "training_script"):
@@ -331,7 +325,7 @@ def setup_argument_parser(script_name: str = "training_script"):
     parser.add_argument(
         "--learning-rate", 
         type=float, 
-        default=2e-5,
+        default=1e-5,
         help="Learning rate for training"
     )
     
@@ -391,8 +385,13 @@ def merge_configs(base_config: Dict, override_config: Dict, args) -> Dict:
     
     # Apply override config
     config.update(override_config)
-    
     # Apply command line arguments (if provided)
+    if args.loss_type is not None:
+        config["loss_type"] = args.loss_type
+    
+    if args.agent_type is not None:
+        config["agent_type"] = args.agent_type
+    
     if args.epochs is not None:
         config["num_epochs"] = args.epochs
     
@@ -405,7 +404,7 @@ def merge_configs(base_config: Dict, override_config: Dict, args) -> Dict:
     if args.model is not None:
         config["model_name"] = args.model
         
-    if args.learning_rate != 2e-5:  # If different from default
+    if args.learning_rate != 1e-5:  # If different from default
         config["learning_rate"] = args.learning_rate
         
     if args.output_dir is not None:
