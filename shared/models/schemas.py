@@ -41,6 +41,7 @@ class QueryRequest(BaseModel):
     similarity_threshold: float = 0.7
     embedding_model: Optional[str] = None
     use_multi_step_reasoning: bool = False
+    use_adaptive_agent: bool = False
 
 class ReasoningStep(BaseModel):
     step_number: int
@@ -56,6 +57,9 @@ class QueryResponse(BaseModel):
     processing_time: float
     reasoning_steps: Optional[List[ReasoningStep]] = None
     num_steps: Optional[int] = None
+    # Adaptive agent information
+    agent_decision: Optional[Dict[str, Any]] = None
+    strategy_used: Optional[str] = None
 
 class ContextRetrievalRequest(BaseModel):
     query: str

@@ -1,5 +1,5 @@
 import streamlit as st
-from frontend.utils.api_client import get_api_client
+from utils.api_client import get_api_client
 
 st.set_page_config(
     page_title="Adaptive RAG System",
