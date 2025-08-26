@@ -1,9 +1,22 @@
-# Adaptive RAG System
+# Adaptive Retrieval Augmented Generation (ARAG) System
 
-An intelligent document query system with adaptive retrieval capabilities, built with FastAPI and Streamlit.
+An intelligent document query system with **adaptive retrieval capabilities** and **trained routing agents**, built with FastAPI and Streamlit. This thesis project implements the **Dual Question Framework** to optimize RAG systems by intelligently routing queries based on hallucination risk and specialization needs.
 
 ## Features
 
+### 🧠 **Adaptive Agent System** (Core Innovation)
+- **Trained DeBERTa Models**: Production-ready regression models for query analysis
+- **Dual Question Framework**: 
+  - Question 1: Will the LLM likely hallucinate on this query?
+  - Question 2: Does this query need specialized domain knowledge?
+- **Intelligent Routing**: Automatically routes queries to optimal strategy:
+  - **Direct LLM**: For low-risk, general knowledge queries
+  - **Single-Step RAG**: For queries needing context retrieval
+  - **Multi-Step RAG**: For complex queries requiring detailed reasoning
+- **No Fallbacks**: Pure model predictions without pattern matching
+- **Evaluation Framework**: Comprehensive tools for model performance analysis
+
+### 📄 **Document Processing & RAG System**
 - **Document Upload**: Support for PDF, DOCX, PPTX, and 15+ other formats via Kreuzberg
 - **Advanced Text Chunking**: Three chunking methods available with overlap support:
   - **Recursive** (Default): Sentence-aware chunking that preserves sentence boundaries
@@ -23,22 +36,30 @@ An intelligent document query system with adaptive retrieval capabilities, built
 ## Architecture
 
 ### Core Components
-- **FastAPI Backend**: RESTful API for document processing
-- **Streamlit Frontend**: Interactive web interface
+- **Adaptive Agents** (`adaptive_agents/`): Trained DeBERTa models for intelligent query routing
+- **FastAPI Backend**: RESTful API for document processing and query handling
+- **Streamlit Frontend**: Interactive web interface with adaptive routing integration
 - **Kreuzberg**: Modern document processing library with OCR fallback
 - **Ollama**: Local LLM and embedding service
 - **Qdrant**: Vector database for semantic search
 - **spaCy**: NLP processing for chunking and entity extraction
 
 ### Processing Pipeline
-1. Document Upload → Multi-format file processing
-2. Text Extraction → Kreuzberg unified extraction with OCR fallback
-3. Intelligent Chunking → Choice of recursive, semantic, or LangChain methods with overlap
-4. Embedding Generation → Ollama vector creation
-5. Vector Storage → Qdrant indexing with metadata
-6. Query Processing → Two modes available:
-   - **Standard Mode**: Direct similarity search + LLM response generation
-   - **Multi-Step Mode**: Query decomposition → step-by-step reasoning → synthesis
+
+#### Document Processing
+1. **Document Upload** → Multi-format file processing via Kreuzberg
+2. **Text Extraction** → Unified extraction with OCR fallback
+3. **Intelligent Chunking** → Choice of recursive, semantic, or LangChain methods with overlap
+4. **Embedding Generation** → Ollama vector creation
+5. **Vector Storage** → Qdrant indexing with metadata
+
+#### Adaptive Query Processing (Core Innovation)
+1. **Query Analysis** → Adaptive agents analyze query for hallucination risk and specialization need
+2. **Routing Decision** → Threshold-based routing to optimal strategy:
+   - **Direct LLM**: Low risk, general knowledge queries
+   - **Single-Step RAG**: Queries needing context retrieval
+   - **Multi-Step RAG**: Complex queries requiring detailed reasoning
+3. **Response Generation** → Execute selected strategy for optimal accuracy/performance balance
 
 ### Optional Features
 - **Entity Extraction Service**: Advanced NLP processing for:
@@ -236,23 +257,31 @@ metadata = extractor.extract_metadata_only("/path/to/document.pdf")
 ### Project Structure
 ```
 arag/
+├── adaptive_agents/              # 🧠 Core Innovation: Adaptive Routing System
+│   ├── agents/                   # Trained DeBERTa models for query analysis
+│   ├── models/saved_models/      # Production-ready trained models
+│   ├── evaluation/               # Comprehensive evaluation framework
+│   ├── training/                 # Training infrastructure and utilities
+│   ├── datasets/                 # Training and evaluation datasets
+│   └── predict_adaptive.py      # Interactive CLI for testing
 ├── backend/
 │   └── app/
-│       ├── api/          # API routes
-│       ├── core/         # Configuration
-│       ├── services/     # Business logic
+│       ├── api/                  # API routes with adaptive routing integration
+│       ├── core/                 # Configuration
+│       ├── services/             # Business logic
 │       │   ├── document_processor.py    # Kreuzberg-based document processing
 │       │   ├── chunking_service.py      # Text chunking methods
 │       │   ├── entity_extractor.py      # Optional entity extraction
-│       │   ├── ollama_service.py        # LLM integration with multi-step reasoning
+│       │   ├── ollama_service.py        # LLM integration with adaptive routing
 │       │   └── qdrant_service.py        # Vector database
-│       └── main.py       # FastAPI app
+│       └── main.py               # FastAPI app
 ├── frontend/
-│   ├── pages/           # Streamlit pages
-│   ├── utils/           # Utilities
-│   └── Home.py          # Main page
+│   ├── pages/                    # Streamlit pages with adaptive features
+│   ├── utils/                    # Utilities
+│   └── Home.py                   # Main page
 ├── shared/
-│   └── models/          # Shared data models
+│   └── models/                   # Shared data models
+├── dataset-builder/              # Dataset generation for training
 └── requirements.txt
 ```
 

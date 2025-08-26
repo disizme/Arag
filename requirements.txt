@@ -27,6 +27,7 @@ langchain-community
 langchain-ollama
 requests
 beautifulsoup4
+rank_bm25
 
 #LLM Integration
 ollama

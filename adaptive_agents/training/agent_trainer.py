@@ -160,9 +160,20 @@ class HallucinationPredictor:
         return {
             "input_ids": tokenized_data["input_ids"],
             "attention_mask": tokenized_data["attention_mask"],
-            "labels": [int(score * 10) for score in data["score"]]
+            "labels": data["score"]
         }
 
+    def normalize_score(self, data: List[Dict]) -> List[Dict]:
+        """Normalize score to 0-1 range."""
+        scores = [item["score"] for item in data]
+        min_score, max_score = min(scores), max(scores)
+        self.min_score = min_score
+        self.max_score = max_score
+        print(f"Original score range: {min_score} to {max_score}")
+        for item in data:
+            item["score"] = (item["score"] - min_score) / (max_score - min_score)
+        return data
+        
     def prepare_datasets(
         self, agent_type: str, train_size: float = 0.7, val_size: float = 0.15, test_size: float = 0.15
     ) -> DatasetDict:
@@ -173,6 +184,8 @@ class HallucinationPredictor:
             DatasetDict with tokenized train/validation/test splits
         """
         raw_data = self.load_dataset(agent_type)
+        raw_data = self.normalize_score(raw_data)
+
         train_data, val_data, test_data = create_data_splits(
             data=raw_data,
             train_size=train_size,
@@ -186,16 +199,12 @@ class HallucinationPredictor:
         self.setup_tokenizer()
         
         train_dataset = Dataset.from_list(train_data)
-        train_labels = [int(data["score"] * 10) for data in train_dataset]
-        self.class_weights = compute_class_weight(
-            'balanced',
-            classes=np.arange(11),
-            y=train_labels
-        )
         val_dataset = Dataset.from_list(val_data)
         test_dataset = Dataset.from_list(test_data)
         logger.info("[TOKENIZATION] Tokenizing datasets...")
-        remove_columns = ["id","question", "answer", "reason", "source", "score"]
+        
+        remove_columns = ["id","question", "answer", "votes", "signals", "source", "score"]
+        
         train_dataset = train_dataset.map(
             self.tokenize_data,
             batched=True,
