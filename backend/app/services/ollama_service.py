@@ -16,7 +16,7 @@ class OllamaService:
                 model=embedding_model,
                 prompt=text
             )
-            print(f"[Ollama] Embedding generated: {response}")
+            #print(f"[Ollama] Embedding generated: {response}")
             return response['embedding']
         except Exception as e:
             raise Exception(f"Failed to get embedding: {str(e)}")

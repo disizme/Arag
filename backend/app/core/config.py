@@ -19,11 +19,14 @@ class Settings(BaseSettings):
     
     # Document Processing
     MAX_FILE_SIZE_MB: int = 50
-    CHUNK_SIZE: int = 1000
-    CHUNK_OVERLAP: int = 200
+    CHUNK_SIZE: int = 500
+    CHUNK_OVERLAP: int = 100
     
     # Upload Configuration
     UPLOAD_DIRECTORY: str = "uploads"
+    
+    # Adaptive Agent Configuration
+    USE_HUGGINGFACE_AGENTS: bool = False  # Set to True to use HuggingFace models
     
     class Config:
         env_file = ".env"
