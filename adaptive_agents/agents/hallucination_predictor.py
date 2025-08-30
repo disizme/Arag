@@ -44,7 +44,8 @@ class HallucinationPredictor(BasePredictor):
         if model_path is None:
             import os
             current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            default_model_path = os.path.join(current_dir, "models", "saved_models", "hr-trained", "hallucination_predictor_model")
+            #default_model_path = os.path.join(current_dir, "models", "saved_models", "hr-trained", "hallucination_predictor_model")
+            default_model_path = os.path.join(current_dir, "models", "v2", "hallucination_predictor_v2")
             if os.path.exists(default_model_path):
                 model_path = default_model_path
                 logger.info(f"[HALLUCINATION-PREDICTOR] Using saved model: {model_path}")

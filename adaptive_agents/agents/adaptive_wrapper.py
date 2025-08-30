@@ -38,7 +38,7 @@ import time
 from .hallucination_predictor import HallucinationPredictor
 from .specialization_predictor import SpecializationPredictor
 from .query_complexity_predictor import ComplexityResult, QueryComplexityPredictor
-from ..models.base_predictor import PredictionResult
+from models.base_predictor import PredictionResult
 
 logger = logging.getLogger(__name__)
 
@@ -56,9 +56,7 @@ class RoutingDecision:
     strategy: QueryStrategy
     hallucination_risk: PredictionResult
     specialization_need: PredictionResult
-    reasoning: str
     processing_time_ms: float
-    
     # Convenience properties for integration
     @property
     def use_rag(self) -> bool:
@@ -69,6 +67,11 @@ class RoutingDecision:
     def use_complex_reasoning(self) -> bool:
         """Whether to use multi-step reasoning"""
         return self.strategy == QueryStrategy.MULTI_FETCH
+
+@dataclass
+class ComplexityDecision:
+    complexity: ComplexityResult
+    processing_time_ms: float
 
 class AdaptiveWrapper:
     """
@@ -127,8 +130,9 @@ class AdaptiveWrapper:
             
             # Run both predictors concurrently for efficiency
             hallucination_task = self.hallucination_predictor.predict(query)
+
             specialization_task = self.specialization_predictor.predict(query)
-            
+
             hallucination_risk, specialization_need = await asyncio.gather(
                 hallucination_task,
                 specialization_task
@@ -136,18 +140,13 @@ class AdaptiveWrapper:
             
             # Apply specialization-first routing logic
             strategy = self._determine_strategy(hallucination_risk, specialization_need)
-            
-            # Generate human-readable reasoning
-            reasoning = self._generate_reasoning(strategy, hallucination_risk, specialization_need)
-            
             processing_time = (time.time() - start_time) * 1000  # Convert to ms
             
             decision = RoutingDecision(
                 strategy=strategy,
                 hallucination_risk=hallucination_risk,
                 specialization_need=specialization_need,
-                reasoning=reasoning,
-                processing_time_ms=processing_time
+                processing_time_ms=processing_time,
             )
             
             logger.info(f"[ADAPTIVE-WRAPPER] Decision: {strategy.value} (hall: {hallucination_risk.score:.3f}, spec: {specialization_need.score:.3f}, time: {processing_time:.1f}ms)")
@@ -156,7 +155,7 @@ class AdaptiveWrapper:
             
         except Exception as e:
             logger.error(f"[ADAPTIVE-WRAPPER] Error in analysis: {e}")
-            return self._fallback_decision(query, time.time() - start_time)
+            raise e
     
     def _determine_strategy(
         self, 
@@ -201,78 +200,24 @@ class AdaptiveWrapper:
         else:
             return QueryStrategy.NO_FETCH
     
-    def _generate_reasoning(
-        self,
-        strategy: QueryStrategy,
-        hallucination_risk: PredictionResult,
-        specialization_need: PredictionResult
-    ) -> str:
-        """Generate clear reasoning showing the routing decision based on dual thresholds"""
+    async def predict_query_complexity(self, query: str) -> ComplexityDecision:
+        """
+        Predict query complexity using the complexity predictor.
         
-        hall_score = hallucination_risk.score
-        spec_score = specialization_need.score
-        
-        if strategy == QueryStrategy.NO_FETCH:
-            return f"No Fetch (Direct LLM): Low specialization need ({spec_score:.2f} < 0.3)"
-        elif strategy == QueryStrategy.SHALLOW_FETCH:
-            return f"Shallow Fetch: Medium specialization ({spec_score:.2f}) + low hallucination ({hall_score:.2f} < 0.4)"
-        elif strategy == QueryStrategy.DENSE_FETCH:
-            return f"Dense Fetch: Medium specialization ({spec_score:.2f}) + medium hallucination ({hall_score:.2f})"
-        elif strategy == QueryStrategy.HYBRID_FETCH:
-            return f"Hybrid Fetch: Complex scoring - spec={spec_score:.2f}, hall={hall_score:.2f}"
-        elif strategy == QueryStrategy.MULTI_FETCH:
-            return f"Multi-fetch: High specialization ({spec_score:.2f} > 0.7) + high hallucination ({hall_score:.2f} > 0.7)"
-        else:
-            return f"Unknown strategy: spec={spec_score:.2f}, hall={hall_score:.2f}"
-    
-    def _fallback_decision(self, query: str, processing_time: float) -> RoutingDecision:
-        """Safe fallback decision when analysis fails"""
-        
-        # Create fallback predictions
-        fallback_hallucination = PredictionResult(
-            score=0.6,
-            reasoning="Fallback prediction",
-            model_type="fallback"
-        )
-        
-        fallback_specialization = PredictionResult(
-            score=0.6,
-            reasoning="Fallback prediction",
-            model_type="fallback"
-        )
-        
-        return RoutingDecision(
-            strategy=QueryStrategy.DENSE_FETCH,  # Safe middle ground
-            hallucination_risk=fallback_hallucination,
-            specialization_need=fallback_specialization,
-            reasoning="Fallback to dense fetch due to analysis error",
-            processing_time_ms=processing_time * 1000
-        )
-    
-    def set_thresholds(
-        self,
-        hallucination_high_threshold: Optional[float] = None,
-        hallucination_low_threshold: Optional[float] = None,
-        specialization_high_threshold: Optional[float] = None,
-        specialization_low_threshold: Optional[float] = None,
-    ):
-        """Update decision thresholds"""
-        if hallucination_high_threshold is not None:
-            self.hallucination_high_threshold = hallucination_high_threshold
+        Args:
+            query: The input query to analyze
             
-        if hallucination_low_threshold is not None:
-            self.hallucination_low_threshold = hallucination_low_threshold
-            
-        if specialization_high_threshold is not None:
-            self.specialization_high_threshold = specialization_high_threshold
-            
-        if specialization_low_threshold is not None:
-            self.specialization_low_threshold = specialization_low_threshold
-                    
-        logger.info(f"[ADAPTIVE-WRAPPER] Updated thresholds:")
-        logger.info(f"  Hallucination - High: {self.hallucination_high_threshold}, Low: {self.hallucination_low_threshold}")
-        logger.info(f"  Specialization - High: {self.specialization_high_threshold}, Low: {self.specialization_low_threshold}")
-    
+        Returns:
+            PredictionResult with complexity score (0.0=A, 0.5=B, 1.0=C)
+        """
+        start_time = time.time()
+        complexity_result = await self.query_complexity_predictor.predict(query)
+        processing_time = (time.time() - start_time) * 1000
+        return ComplexityDecision(
+            complexity=complexity_result,
+            processing_time_ms=processing_time
+        )
+
     def get_configuration(self) -> Dict[str, Any]:
         """Get current configuration"""
         return {
@@ -291,17 +236,5 @@ class AdaptiveWrapper:
             "query_complexity_predictor": self.query_complexity_predictor.get_model_info()
         }
     
-    async def predict_query_complexity(self, query: str) -> ComplexityResult:
-        """
-        Predict query complexity using the complexity predictor.
-        
-        Args:
-            query: The input query to analyze
-            
-        Returns:
-            PredictionResult with complexity score (0.0=A, 0.5=B, 1.0=C)
-        """
-        return await self.query_complexity_predictor.predict(query)
-
 # Global instance for easy usage
 adaptive_wrapper = AdaptiveWrapper()

@@ -19,6 +19,12 @@ from .specialization_predictor import (
     specialization_predictor
 )
 
+from .query_complexity_predictor import (
+    QueryComplexityPredictor,
+    predict_query_complexity,
+    query_complexity_predictor
+)
+
 from .adaptive_wrapper import (
     AdaptiveWrapper,
     RoutingDecision,
@@ -30,6 +36,7 @@ __all__ = [
     # Main classes
     "HallucinationPredictor",
     "SpecializationPredictor", 
+    "QueryComplexityPredictor",
     "AdaptiveWrapper",
     
     # Result classes
@@ -41,10 +48,12 @@ __all__ = [
     # Convenience functions
     "predict_hallucination_risk",
     "predict_specialization_need",
+    "predict_query_complexity",
     
     # Global instances
     "hallucination_predictor",
     "specialization_predictor",
+    "query_complexity_predictor",
     "adaptive_wrapper"
 ]
 

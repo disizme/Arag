@@ -6,37 +6,43 @@ Loads trained T5 model and predicts A/B/C for input queries
 
 import torch
 import numpy as np
-from transformers import T5ForConditionalGeneration, AutoTokenizer
+from transformers import T5ForConditionalGeneration, AutoTokenizer, logging
 import sys
 from pathlib import Path
 import os
+from dataclasses import dataclass
 from typing import Dict, Any
 # Add parent directory to path for imports
 current_dir = Path(__file__).parent.parent
 sys.path.append(str(current_dir))
 
+logging.set_verbosity_error()
 # Label mapping
 label_to_strategy = {
     'A': 'no_fetch',
     'B': 'dense_fetch', 
     'C': 'multi_fetch'
 }
-class ComplexityResult():
+
+@dataclass
+class ComplexityResult:
     label: str
-    confidence: float
 
 class QueryComplexityPredictor():
     def __init__(self, 
+        model_name: str = "t5-large",
         device: str = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu",
         max_length: int = 384,
         padding: bool = False,
         return_tensors: str = "pt"
     ):
         current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        model_path = os.path.join(current_dir, "models", "saved_models", "adaptive_rag_classifier")
+        #model_path = os.path.join(current_dir, "models", "saved_models", "adaptive_rag_classifier")
+        model_path = os.path.join(current_dir, "models", "v2", "adaptive_rag_classifier")
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model path {model_path} does not exist")
         
+        self.model_name = model_name
         self.model_path = model_path
         self.device = device
         self.max_length = max_length
@@ -48,7 +54,7 @@ class QueryComplexityPredictor():
         self.model.to(self.device)
         self.model.eval()
         
-    def predict(self, query: str) -> ComplexityResult:
+    async def predict(self, query: str) -> ComplexityResult:
         """Predict complexity class for a query"""
         inputs = self.tokenizer(
             query.strip(),
@@ -84,9 +90,10 @@ class QueryComplexityPredictor():
             # Get prediction
             pred_label = np.argmax(probs, 0)[0]
             pred_class = ['A', 'B', 'C'][pred_label]
-            confidence = float(np.max(probs, 0)[0])
             label = label_to_strategy[pred_class]
-            return ComplexityResult(label, confidence)
+            return ComplexityResult(
+                label=label,
+            )
     
     def get_model_info(self) -> Dict[str, Any]:
         """Get information about the loaded model"""
