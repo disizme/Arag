@@ -208,9 +208,18 @@ class AdaptiveWrapper:
             query: The input query to analyze
             
         Returns:
-            PredictionResult with complexity score (0.0=A, 0.5=B, 1.0=C)
+            ComplexityDecision with complexity result and processing time
         """
         start_time = time.time()
+        
+        if not self.query_complexity_predictor.model_available:
+            logger.warning("[ADAPTIVE-WRAPPER] Query complexity predictor model not available, returning fallback")
+            processing_time = (time.time() - start_time) * 1000
+            return ComplexityDecision(
+                complexity=ComplexityResult(label='dense_fetch'),
+                processing_time_ms=processing_time
+            )
+        
         complexity_result = await self.query_complexity_predictor.predict(query)
         processing_time = (time.time() - start_time) * 1000
         return ComplexityDecision(
@@ -220,7 +229,7 @@ class AdaptiveWrapper:
 
     def get_configuration(self) -> Dict[str, Any]:
         """Get current configuration"""
-        return {
+        config = {
             "thresholds": {
                 "hallucination": {
                     "high": self.hallucination_high_threshold,
@@ -235,6 +244,13 @@ class AdaptiveWrapper:
             "specialization_predictor": self.specialization_predictor.get_model_info(),
             "query_complexity_predictor": self.query_complexity_predictor.get_model_info()
         }
+        
+        query_model_info = self.query_complexity_predictor.get_model_info()
+        # Only include query complexity predictor info if available
+        if query_model_info.model_available:
+            config["query_complexity_predictor"] = query_model_info
+        
+        return config
     
 # Global instance for easy usage
 adaptive_wrapper = AdaptiveWrapper()

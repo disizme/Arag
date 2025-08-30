@@ -39,8 +39,6 @@ class QueryComplexityPredictor():
         current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         #model_path = os.path.join(current_dir, "models", "saved_models", "adaptive_rag_classifier")
         model_path = os.path.join(current_dir, "models", "v2", "adaptive_rag_classifier")
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model path {model_path} does not exist")
         
         self.model_name = model_name
         self.model_path = model_path
@@ -49,13 +47,24 @@ class QueryComplexityPredictor():
         self.padding = padding
         self.return_tensors = return_tensors
         
-        self.model = T5ForConditionalGeneration.from_pretrained(self.model_path)
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
-        self.model.to(self.device)
-        self.model.eval()
+        # Check if model exists
+        self.model_available = os.path.exists(model_path)
+        
+        if self.model_available:
+            self.model = T5ForConditionalGeneration.from_pretrained(self.model_path)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+            self.model.to(self.device)
+            self.model.eval()
+        else:
+            self.model = None
+            self.tokenizer = None
         
     async def predict(self, query: str) -> ComplexityResult:
         """Predict complexity class for a query"""
+        if not self.model_available:
+            # Return default fallback when model is not available
+            return ComplexityResult(label='dense_fetch')
+        
         inputs = self.tokenizer(
             query.strip(),
             truncation=True,
@@ -103,9 +112,11 @@ class QueryComplexityPredictor():
             "device": self.device,
             "max_length": self.max_length,
             "model_loaded": self.model is not None,
+            "model_available": self.model_available,
             "purpose": "Query complexity prediction (T5)"
         }
 
+# Global instance - will gracefully handle missing model
 query_complexity_predictor = QueryComplexityPredictor()
 
 async def predict_query_complexity(query: str) -> ComplexityResult:
