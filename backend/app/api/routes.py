@@ -17,16 +17,10 @@ from shared.models.schemas import (
 from backend.app.services.document_processor import document_processor
 from backend.app.services.chunking_service import chunking_service
 from backend.app.services.ollama_service import ollama_service
+from backend.app.services.bge_service import bge_service
 from backend.app.services.qdrant_service import qdrant_service
 from backend.app.core.config import settings
 
-# Import agents based on configuration
-#if settings.USE_HUGGINGFACE_AGENTS:
-#    from backend.app.agents.huggingface.adaptive_agent import determine_knowledge_base_need
-#    print("[ADAPTIVE] Using HuggingFace-based agents")
-#else:
-#    from backend.app.agents.adaptive_agent import determine_knowledge_base_need
-#    print("[ADAPTIVE] Using rule-based agents")
 
 router = APIRouter()
 
@@ -38,7 +32,7 @@ async def process_no_fetch_query(request: QueryRequest) -> QueryResponse:
     # Direct LLM without context
     answer = await ollama_service.generate_response(
         request.query, 
-        "", 
+        None, 
         request.model_name
     )
     
@@ -52,12 +46,12 @@ async def process_no_fetch_query(request: QueryRequest) -> QueryResponse:
     )
 
 async def process_shallow_fetch_query(request: QueryRequest) -> QueryResponse:
-    """Process query using sparse retrieval (BM25)"""
+    """Process query using sparse retrieval (BGE-M3)"""
     start_time = time.time()
     
-    # Search using sparse vectors (BM25)
+    # Search using sparse vectors (BGE-M3)
     similar_chunks = await qdrant_service.search_shallow(
-        request.query,
+        query_text=request.query,
         limit=request.max_chunks,
         score_threshold=request.similarity_threshold
     )
@@ -82,15 +76,12 @@ async def process_shallow_fetch_query(request: QueryRequest) -> QueryResponse:
     )
 
 async def process_dense_fetch_query(request: QueryRequest) -> QueryResponse:
-    """Process query using dense retrieval (embeddings)"""
+    """Process query using dense retrieval (BGE-M3 embeddings)"""
     start_time = time.time()
-    
-    # Get query embedding
-    query_embedding = await ollama_service.get_embedding(request.query, request.embedding_model)
     
     # Search for similar chunks using dense vectors
     similar_chunks = await qdrant_service.search_dense(
-        query_embedding,
+        query_text=request.query,
         limit=request.max_chunks,
         score_threshold=request.similarity_threshold
     )
@@ -115,15 +106,11 @@ async def process_dense_fetch_query(request: QueryRequest) -> QueryResponse:
     )
 
 async def process_hybrid_fetch_query(request: QueryRequest) -> QueryResponse:
-    """Process query using hybrid retrieval (sparse + dense)"""
+    """Process query using hybrid retrieval (BGE-M3 sparse + dense)"""
     start_time = time.time()
     
-    # Get query embedding
-    query_embedding = await ollama_service.get_embedding(request.query, request.embedding_model)
-    
-    # Search using hybrid approach
+    # Search using hybrid approach with BGE-M3
     similar_chunks = await qdrant_service.search_hybrid(
-        query_embedding=query_embedding,
         query_text=request.query,
         limit=request.max_chunks,
         score_threshold=request.similarity_threshold
@@ -153,13 +140,9 @@ async def process_multi_fetch_query(request: QueryRequest) -> QueryResponse:
     start_time = time.time()
     
     # Context retrieval function using hybrid search for multi-step reasoning
-    async def context_retrieval_func(sub_query: str) -> str:
-        # Get embedding for sub-query
-        sub_query_embedding = await ollama_service.get_embedding(sub_query, request.embedding_model)
-        
-        # Use hybrid search for context retrieval in multi-step
+    async def context_retrieval_func(sub_query: str) -> str:        
+        # Use hybrid search for context retrieval in multi-step (BGE-M3)
         chunks = await qdrant_service.search_hybrid(
-            query_embedding=sub_query_embedding,
             query_text=sub_query,
             limit=request.max_chunks,
             score_threshold=request.similarity_threshold
@@ -189,10 +172,8 @@ async def process_multi_fetch_query(request: QueryRequest) -> QueryResponse:
         )
         reasoning_steps.append(reasoning_step)
         
-        # Get chunks for this step to include in response using hybrid search
-        step_embedding = await ollama_service.get_embedding(step["sub_question"], request.embedding_model)
+        # Get chunks for this step to include in response using hybrid search (BGE-M3)
         step_chunks = await qdrant_service.search_hybrid(
-            query_embedding=step_embedding,
             query_text=step["sub_question"],
             limit=request.max_chunks,
             score_threshold=request.similarity_threshold
@@ -291,9 +272,10 @@ async def health_check():
     """Health check endpoint"""
     ollama_status = await ollama_service.check_health()
     qdrant_status = await qdrant_service.check_health()
+    bge_status = await bge_service.check_health()
     
     return HealthResponse(
-        status="healthy" if ollama_status and qdrant_status else "unhealthy",
+        status="healthy" if ollama_status and qdrant_status and bge_status else "unhealthy",
         ollama_available=ollama_status,
         qdrant_available=qdrant_status
     )

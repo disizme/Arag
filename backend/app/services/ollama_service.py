@@ -7,28 +7,19 @@ class OllamaService:
     def __init__(self):
         self.client = ollama.Client(host=settings.OLLAMA_BASE_URL)
     
-    async def get_embedding(self, text: str, model: str = None) -> List[float]:
-        """Get embedding for a text using Ollama"""
-        try:
-            embedding_model = model or settings.OLLAMA_EMBEDDING_MODEL
-            response = await asyncio.to_thread(
-                self.client.embeddings,
-                model=embedding_model,
-                prompt=text
-            )
-            #print(f"[Ollama] Embedding generated: {response}")
-            return response['embedding']
-        except Exception as e:
-            raise Exception(f"Failed to get embedding: {str(e)}")
-    
     async def generate_response(self, query: str, context: str, model_name: str) -> str:
         """Generate response using Ollama with context"""
         try:
-            prompt = f"""Context: {context}
-            
-Question: {query}
+            if context is None:
+                prompt = f"""Question: {query}
 
-Please answer the question based on the provided context. If the context doesn't contain enough information to answer the question, say so clearly."""
+            Please answer the question as precisely as possible. Do not include any additional information or commentary."""
+            else:
+                prompt = f"""Context: {context}
+
+            Question: {query}
+
+            Please answer the question based on the provided context as precisely as possible. If the context doesn't contain enough information to answer the question, say so clearly."""
             
             response = await asyncio.to_thread(
                 self.client.generate,

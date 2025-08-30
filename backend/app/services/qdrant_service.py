@@ -1,8 +1,8 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance, PointStruct, SparseVector
+from qdrant_client.models import VectorParams, Distance, PointStruct, SparseVector, Prefetch, FusionQuery, Fusion
 from typing import List, Dict, Any, Optional
 from backend.app.core.config import settings
-from backend.app.services.bm25_service import bm25_service
+from backend.app.services.bge_service import bge_service
 from shared.models.schemas import DocumentChunk
 import uuid
 import asyncio
@@ -44,40 +44,35 @@ class QdrantService:
             raise Exception(f"Failed to ensure collection: {str(e)}")
     
     async def add_chunks(self, chunks: List[DocumentChunk]) -> bool:
-        """Add document chunks to Qdrant in batches with both dense and sparse vectors"""
-        try:
-            # Fit BM25 model on all chunk texts if not already fitted
-            if not bm25_service.bm25_model:
-                chunk_texts = [chunk.content for chunk in chunks]
-                bm25_service.fit(chunk_texts)
-            
-            # Convert chunks to points first
+        """Add document chunks to Qdrant in batches with both dense and sparse vectors using BGE-M3"""
+        try:            
+            # Convert chunks to points with BGE-M3 embeddings
             points = []
             for chunk in chunks:
-                if chunk.embedding:
-                    # Generate sparse vector using BM25
-                    sparse_vector_dict = bm25_service.get_sparse_vector(chunk.content)
-                    sparse_vector = SparseVector(
-                        indices=list(sparse_vector_dict.keys()),
-                        values=list(sparse_vector_dict.values())
-                    )
-                    
-                    point = PointStruct(
-                        id=str(uuid.uuid4()),
-                        vector={
-                            "dense": chunk.embedding,
-                            "sparse": sparse_vector
-                        },
-                        payload={
-                            "content": chunk.content,
-                            "metadata": chunk.metadata,
-                            "source_file": chunk.source_file,
-                            "page_number": chunk.page_number,
-                            "chunk_index": chunk.chunk_index,
-                            "created_at": chunk.created_at.isoformat()
-                        }
-                    )
-                    points.append(point)
+                # Generate both dense and sparse embeddings using BGE-M3
+                embeddings = await bge_service.get_embeddings(chunk.content)
+                
+                sparse_vector = SparseVector(
+                    indices=list(embeddings.sparse.keys()),
+                    values=list(embeddings.sparse.values())
+                )
+                
+                point = PointStruct(
+                    id=str(uuid.uuid4()),
+                    vector={
+                        "dense": embeddings.dense,
+                        "sparse": sparse_vector
+                    },
+                    payload={
+                        "content": chunk.content,
+                        "metadata": chunk.metadata,
+                        "source_file": chunk.source_file,
+                        "page_number": chunk.page_number,
+                        "chunk_index": chunk.chunk_index,
+                        "created_at": chunk.created_at.isoformat()
+                    }
+                )
+                points.append(point)
             
             if not points:
                 return True
@@ -128,15 +123,18 @@ class QdrantService:
     
     async def search_dense(
         self, 
-        query_embedding: List[float], 
+        query_text: str, 
         limit: int = 5,
         score_threshold: float = 0.3
     ) -> List[Dict[str, Any]]:
-        """Search for similar chunks using dense vectors"""
+        """Search for similar chunks using dense vectors (BGE-M3)"""
         try:
+            # Generate dense embedding for the query using BGE-M3
+            embeddings = await bge_service.get_embeddings(query_text)
+            
             results = self.client.search(
                 collection_name=self.collection_name,
-                query_vector=("dense", query_embedding),
+                query_vector=("dense", embeddings.dense),
                 limit=limit,
                 #score_threshold=score_threshold
             )
@@ -162,10 +160,10 @@ class QdrantService:
         limit: int = 5,
         score_threshold: float = 0.3
     ) -> List[Dict[str, Any]]:
-        """Search for similar chunks using sparse/shallow vectors (BM25)"""
+        """Search for similar chunks using sparse/shallow vectors (BGE-M3)"""
         try:
-            # Generate sparse vector for the query
-            sparse_vector_dict = bm25_service.get_sparse_vector(query_text)
+            # Generate sparse vector for the query using BGE-M3
+            sparse_vector_dict = await bge_service.get_sparse_vector(query_text)
             sparse_vector = SparseVector(
                 indices=list(sparse_vector_dict.keys()),
                 values=list(sparse_vector_dict.values())
@@ -195,75 +193,53 @@ class QdrantService:
     
     async def search_hybrid(
         self,
-        query_embedding: List[float],
         query_text: str,
         limit: int = 5,
-        dense_weight: float = 0.7,
-        sparse_weight: float = 0.3,
         score_threshold: float = 0.3
     ) -> List[Dict[str, Any]]:
-        """Hybrid search combining dense and sparse vectors with weighted scores"""
+        """Native hybrid search using Qdrant's built-in RRF fusion with BGE-M3"""
         try:
-            # Perform both searches in parallel
-            dense_results_task = self.search_dense(query_embedding, limit=limit, score_threshold=0.0)
-            sparse_results_task = self.search_shallow(query_text, limit=limit, score_threshold=0.0)
+            # Get both dense and sparse embeddings from BGE-M3
+            embeddings = await bge_service.get_embeddings(query_text)
             
-            dense_results, sparse_results = await asyncio.gather(dense_results_task, sparse_results_task)
+            sparse_vector = SparseVector(
+                indices=list(embeddings.sparse.keys()),
+                values=list(embeddings.sparse.values())
+            )
             
-            # Create a dictionary to combine results by document ID
-            combined_results = {}
-            
-            # Process dense results
-            for result in dense_results:
-                doc_id = result["id"]
-                combined_results[doc_id] = {
-                    **result,
-                    "dense_score": result["score"],
-                    "sparse_score": 0.0,
-                    "hybrid_score": dense_weight * result["score"]
-                }
-            
-            # Process sparse results and combine
-            for result in sparse_results:
-                doc_id = result["id"]
-                if doc_id in combined_results:
-                    # Document found in both searches - combine scores
-                    combined_results[doc_id]["sparse_score"] = result["score"]
-                    combined_results[doc_id]["hybrid_score"] = (
-                        dense_weight * combined_results[doc_id]["dense_score"] +
-                        sparse_weight * result["score"]
+            # Use Qdrant's native hybrid search with RRF fusion
+            results = await asyncio.to_thread(
+                self.client.query_points,
+                collection_name=self.collection_name,
+                prefetch=[
+                    Prefetch(
+                        query=sparse_vector,
+                        using="sparse",
+                        limit=limit * 2  # Get more candidates for better fusion
+                    ),
+                    Prefetch(
+                        query=embeddings.dense,
+                        using="dense",
+                        limit=limit * 2  # Get more candidates for better fusion
                     )
-                else:
-                    # Document only found in sparse search
-                    combined_results[doc_id] = {
-                        **result,
-                        "dense_score": 0.0,
-                        "sparse_score": result["score"],
-                        "hybrid_score": sparse_weight * result["score"]
-                    }
+                ],
+                query=FusionQuery(fusion=Fusion.RRF),
+                limit=limit
+            )
             
-            # Sort by hybrid score and apply limit and threshold
-            final_results = [
+            return [
                 {
-                    "id": result["id"],
-                    "content": result["content"],
-                    "metadata": result["metadata"],
-                    "source_file": result["source_file"],
-                    "page_number": result["page_number"],
-                    "chunk_index": result["chunk_index"],
-                    "score": result["hybrid_score"],
-                    "dense_score": result["dense_score"],
-                    "sparse_score": result["sparse_score"]
+                    "id": str(hit.id),
+                    "content": hit.payload["content"],
+                    "metadata": hit.payload["metadata"],
+                    "source_file": hit.payload["source_file"],
+                    "page_number": hit.payload.get("page_number"),
+                    "chunk_index": hit.payload["chunk_index"],
+                    "score": hit.score
                 }
-                for result in sorted(
-                    combined_results.values(),
-                    key=lambda x: x["hybrid_score"],
-                    reverse=True
-                )
-                if result["hybrid_score"] >= score_threshold
-            ][:limit]
-            
-            return final_results
+                for hit in results.points
+                if hit.score >= score_threshold
+            ]
             
         except Exception as e:
             raise Exception(f"Failed to perform hybrid search: {str(e)}")

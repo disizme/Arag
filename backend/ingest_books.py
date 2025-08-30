@@ -21,8 +21,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from backend.app.services.document_processor import document_processor
 from backend.app.services.chunking_service import chunking_service
 from backend.app.services.qdrant_service import qdrant_service
-from backend.app.services.ollama_service import ollama_service
-from backend.app.services.bm25_service import bm25_service
+from backend.app.services.bge_service import bge_service
 from shared.models.schemas import ChunkingMethod
 
 class BookIngestionService:
@@ -75,11 +74,11 @@ class BookIngestionService:
             raise Exception("Qdrant service is not available")
         print("[HEALTH] ✓ Qdrant service is healthy")
         
-        # Check Ollama
-        ollama_healthy = await ollama_service.check_health()
-        if not ollama_healthy:
-            raise Exception("Ollama service is not available")
-        print("[HEALTH] ✓ Ollama service is healthy")
+        # Check BGE-M3
+        bge_healthy = await bge_service.check_health()
+        if not bge_healthy:
+            raise Exception("BGE-M3 service is not available")
+        print("[HEALTH] ✓ BGE-M3 service is healthy")
         
         # Get collection info
         collection_info = await qdrant_service.get_collection_info()
@@ -89,11 +88,6 @@ class BookIngestionService:
         """Process a single PDF book"""
         filename = pdf_file.name
         file_path = str(pdf_file)
-        
-        # Reset BM25 model to ensure fresh fitting for this PDF
-        print(f"[BM25] {filename} - Resetting BM25 model for fresh fitting")
-        bm25_service.bm25_model = None
-        bm25_service.vocabulary = {}
         
         print(f"[PROCESSING] {filename} - Step 1: Document extraction")
         
@@ -118,37 +112,15 @@ class BookIngestionService:
         if not semantic_chunks:
             raise Exception("No chunks created from document")
         
-        print(f"[PROCESSING] {filename} - Step 3: Generating embeddings for {len(semantic_chunks)} chunks")
+        print(f"[PROCESSING] {filename} - Step 3: Storing {len(semantic_chunks)} chunks in Qdrant (BGE-M3 embeddings generated automatically)")
         
-        # Step 3: Generate embeddings for all chunks
-        chunks_with_embeddings = []
-        for i, chunk in enumerate(semantic_chunks):
-            try:
-                # Generate embedding for this chunk
-                embedding = await ollama_service.get_embedding(chunk.content)
-                chunk.embedding = embedding
-                chunks_with_embeddings.append(chunk)
-                
-                # Progress indicator
-                if (i + 1) % 200 == 0:
-                    print(f"[EMBEDDINGS] {filename} - Generated {i + 1}/{len(semantic_chunks)} embeddings")
-                    
-            except Exception as e:
-                print(f"[WARNING] Failed to generate embedding for chunk {i}: {str(e)}")
-                continue
-        
-        if not chunks_with_embeddings:
-            raise Exception("No embeddings generated for any chunks")
-        
-        print(f"[PROCESSING] {filename} - Step 4: Storing {len(chunks_with_embeddings)} chunks in Qdrant")
-        
-        # Step 4: Store chunks with embeddings in Qdrant
-        success = await qdrant_service.add_chunks(chunks_with_embeddings)
+        # Step 3: Store chunks in Qdrant (BGE-M3 embeddings are generated automatically in add_chunks)
+        success = await qdrant_service.add_chunks(semantic_chunks)
         
         if not success:
             raise Exception("Failed to store chunks in Qdrant")
         
-        print(f"[PROCESSING] {filename} - Successfully ingested {len(chunks_with_embeddings)} chunks")
+        print(f"[PROCESSING] {filename} - Successfully ingested {len(semantic_chunks)} chunks with BGE-M3 embeddings")
     
     def _print_summary(self):
         """Print ingestion summary"""

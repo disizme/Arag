@@ -11,16 +11,20 @@ class Settings(BaseSettings):
     OLLAMA_EMBEDDING_MODEL: str = "snowflake-arctic-embed2:latest"
     OLLAMA_DEFAULT_MODEL: str = "qwen3:latest"
     
+    # BGE-M3 Configuration
+    BGE_MODEL_NAME: str = "BAAI/bge-m3"
+    BGE_USE_FP16: bool = True
+    
     # Qdrant Configuration
     QDRANT_HOST: str = "localhost"
     QDRANT_PORT: int = 6333
     QDRANT_COLLECTION_NAME: str = "documents"
-    QDRANT_VECTOR_SIZE: int = 1024
+    QDRANT_VECTOR_SIZE: int = 1024  # BGE-M3 dense vector size
     
     # Document Processing
     MAX_FILE_SIZE_MB: int = 50
-    CHUNK_SIZE: int = 500
-    CHUNK_OVERLAP: int = 100
+    CHUNK_SIZE: int = 800
+    CHUNK_OVERLAP: int = 150
     
     # Upload Configuration
     UPLOAD_DIRECTORY: str = "uploads"
