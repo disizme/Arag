@@ -36,12 +36,10 @@ class DocumentUploadResponse(BaseModel):
 
 class QueryRequest(BaseModel):
     query: str
-    model_name: str = "llama2"
+    model_name: str = "llama3.2:3b"
+    embedding_model: str = "snowflake-arctic-embed2:latest"
     max_chunks: int = 5
-    similarity_threshold: float = 0.7
-    embedding_model: Optional[str] = None
-    use_multi_step_reasoning: bool = False
-    use_adaptive_agent: bool = False
+    similarity_threshold: float = 0.3
 
 class ReasoningStep(BaseModel):
     step_number: int
@@ -53,13 +51,11 @@ class QueryResponse(BaseModel):
     query: str
     answer: str
     relevant_chunks: List[DocumentChunk]
-    model_used: str
     processing_time: float
     reasoning_steps: Optional[List[ReasoningStep]] = None
     num_steps: Optional[int] = None
     # Adaptive agent information
     agent_decision: Optional[Dict[str, Any]] = None
-    strategy_used: Optional[str] = None
 
 class ContextRetrievalRequest(BaseModel):
     query: str
