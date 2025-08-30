@@ -7,38 +7,21 @@ class APIClient:
     def __init__(self, base_url: str = "http://localhost:8000/api/v1"):
         self.base_url = base_url
     
-    def upload_document(self, file_content: bytes, filename: str, chunking_method: str = "spacy", embedding_model: str = None) -> Dict[str, Any]:
-        """Upload a document to the backend"""
-        try:
-            files = {"file": (filename, io.BytesIO(file_content), "application/octet-stream")}
-            data = {"chunking_method": chunking_method}
-            if embedding_model:
-                data["embedding_model"] = embedding_model
-            response = requests.post(
-                f"{self.base_url}/upload",
-                files=files,
-                data=data,
-                timeout=300  # 5 minutes timeout for large files
-            )
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to upload document: {str(e)}")
-    
-    def query_documents(self, query: str, model_name: str = "qwen3:latest", max_chunks: int = 5, similarity_threshold: float = 0.7) -> Dict[str, Any]:
+    def query_documents(self, query: str, model_name: str = "llama3.2:3b", embedding_model: str = "snowflake-arctic-embed2:latest", max_chunks: int = 5, similarity_threshold: float = 0.3, agent_type: str = "adaptive-rag") -> Dict[str, Any]:
         """Query the document database"""
         try:
             data = {
                 "query": query,
                 "model_name": model_name,
                 "max_chunks": max_chunks,
-                "similarity_threshold": similarity_threshold
+                "similarity_threshold": similarity_threshold,
+                "embedding_model": embedding_model
             }
-      
+            api_route = f"{self.base_url}/query-{agent_type}"
             response = requests.post(
-                f"{self.base_url}/query",
+                api_route,
                 json=data,
-                timeout=180  # 3 minute timeout
+                timeout=300  # 5 minute timeout
             )
             response.raise_for_status()
             return response.json()
@@ -72,27 +55,6 @@ class APIClient:
         except requests.exceptions.RequestException as e:
             raise Exception(f"Failed to get collection info: {str(e)}")
     
-    def retrieve_contexts(self, query: str, max_chunks: int = 5, similarity_threshold: float = 0.7, embedding_model: str = None) -> Dict[str, Any]:
-        """Retrieve contexts for a query without generating response"""
-        try:
-            data = {
-                "query": query,
-                "max_chunks": max_chunks,
-                "similarity_threshold": similarity_threshold
-            }
-            if embedding_model:
-                data["embedding_model"] = embedding_model
-            
-            response = requests.post(
-                f"{self.base_url}/retrieve-contexts",
-                json=data,
-                timeout=60  # 1 minute timeout
-            )
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to retrieve contexts: {str(e)}")
-
 # Initialize API client
 @st.cache_resource
 def get_api_client():

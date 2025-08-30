@@ -113,7 +113,7 @@ if st.session_state.sidebar_visible:
                 selected_model = st.selectbox(
                     "LLM Model", 
                     model_options, 
-                    help="Select a model or leave empty for default(qwen3:latest)")
+                    help="Select a model or leave empty for default(llama3.2:3b)")
                 
             else:
                 st.error("No models available")
@@ -128,6 +128,12 @@ if st.session_state.sidebar_visible:
             max_value=10,
             value=5,
             help="Maximum number of document chunks to retrieve"
+        )
+        
+        agent_type = st.selectbox(
+            "Agent Type",
+            ["adaptive-rag", "classifier-rag", "vanilla-rag"],
+            help="Select the type of agent to use"
         )
         
         similarity_threshold = st.slider(
@@ -159,8 +165,9 @@ if st.session_state.sidebar_visible:
 else:
     # Default values when sidebar is hidden
     selected_model = "default"
+    agent_type = "adaptive-rag"
     max_chunks = 5
-    similarity_threshold = 0.7
+    similarity_threshold = 0.3
 
 # Main chat interface
 col1, col2 = st.columns([3, 1])
@@ -201,6 +208,7 @@ if query:
                 model_name=model_to_use,
                 max_chunks=max_chunks,
                 similarity_threshold=similarity_threshold,
+                agent_type=agent_type
             )
             
             # Add assistant response to chat history
