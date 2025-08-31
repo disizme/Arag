@@ -247,7 +247,7 @@ class AdaptiveWrapper:
         
         query_model_info = self.query_complexity_predictor.get_model_info()
         # Only include query complexity predictor info if available
-        if query_model_info.model_available:
+        if query_model_info['model_available']:
             config["query_complexity_predictor"] = query_model_info
         
         return config

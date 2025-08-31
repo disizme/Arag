@@ -28,6 +28,7 @@ langchain-ollama
 requests
 beautifulsoup4
 rank_bm25
+FlagEmbedding
 
 #LLM Integration
 ollama

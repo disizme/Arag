@@ -72,10 +72,11 @@ class AdaptivePredictorInterface:
             config = self.adaptive_wrapper.get_configuration()
             hall_info = config['hallucination_predictor']
             spec_info = config['specialization_predictor']
-            classifier_info = config['query_complexity_predictor']
             print(f"📊 Hallucination Model: {hall_info['model_path']}")
             print(f"🎯 Specialization Model: {spec_info['model_path']}")
-            print(f"🎯 Classifier Model: {classifier_info['model_path']}")
+            if 'query_complexity_predictor' in config:
+                classifier_info = config['query_complexity_predictor']
+                print(f"🎯 Classifier Model: {classifier_info['model_path']}")
             print(f"⚙️  Thresholds: Hall={self.thresholds['hallucination_high']}-{self.thresholds['hallucination_low']}, Spec={self.thresholds['specialization_high']}-{self.thresholds['specialization_low']}")
             
         except Exception as e:
