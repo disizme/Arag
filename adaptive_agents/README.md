@@ -1,6 +1,6 @@
 # Adaptive RAG Agents
 
-A standalone, plug-and-play system implementing the **Dual Question Framework** for adaptive retrieval-augmented generation.
+A standalone, plug-and-play system implementing the **Dual Question Framework** for adaptive retrieval-augmented generation. The system uses trained DeBERTa regression models to intelligently route queries between direct LLM responses and RAG-enhanced responses.
 
 ## Architecture Overview
 
@@ -9,125 +9,99 @@ The system consists of two specialized agents that analyze queries **before** th
 ### 1. Hallucination Predictor Agent
 - **Purpose**: Predicts if the LLM in the core system might hallucinate given the input query
 - **Timing**: Pre-response analysis (before query goes to core LLM)
-- **Model**: DeBERTa-based fine-tuned classifier
+- **Model**: DeBERTa-v3-base fine-tuned regression model
 - **Output**: Risk score (0.0-1.0) indicating likelihood of hallucination
+- **Location**: `models/saved_models/v2/hallucination_predictor_v2/`
 
-### 2. Specialization Affordance Predictor Agent  
+### 2. Specialization Predictor Agent  
 - **Purpose**: Determines if the query requires domain-specific/course-specific knowledge
 - **Timing**: Pre-response analysis (concurrent with hallucination prediction)
-- **Model**: T5-based fine-tuned classifier
+- **Model**: DeBERTa-v3-base fine-tuned regression model
 - **Output**: Need score (0.0-1.0) indicating requirement for specialized context
+- **Location**: `models/saved_models/v2/specialization_predictor_v2/`
 
-### 3. Wrapper Agent
-- **Purpose**: Coordinates both predictors and makes final routing decision
-- **Logic**: Routes to RAG (single/multi-step) vs direct LLM based on predictions
-- **Interface**: Clean API for integration with any RAG system
+### 3. Query Complexity Classifier (Optional)
+- **Purpose**: Predicts complexity of the query
+- **Timing**: Pre-response analysis (before query goes to core LLM)
+- **Model**: T5-large fine-tuned classification model
+- **Output**: Classification A, B or C corresponding to No Fetch, Single Fetch and Multi-fetch
+- **Location**: `models/saved_models/v2/adaptive_rag_classifier/`
+- **Source**: Agent trained based on Paper by Soyeong Jeong, etal.
+    #### Adaptive-RAG: Learning to Adapt Retrieval-Augmented Large Language Models through Question Complexity
 
-## Directory Structure
-
-```
-adaptive_agents/
-├── README.md                           # This file
-├── requirements.txt                    # Dependencies
-├── config/
-│   ├── model_config.yaml              # Model configurations
-│   └── training_config.yaml           # Training parameters
-├── agents/
-│   ├── __init__.py
-│   ├── hallucination_predictor.py     # DeBERTa-based hallucination predictor
-│   ├── specialization_predictor.py    # T5-based specialization predictor
-│   └── adaptive_wrapper.py            # Main wrapper agent
-├── models/
-│   ├── __init__.py
-│   ├── base_predictor.py              # Base class for predictors
-│   └── saved_models/                  # Trained model checkpoints
-├── datasets/
-│   ├── __init__.py
-│   ├── hallucination_dataset.py       # Dataset generation for hallucination detection
-│   ├── specialization_dataset.py      # Dataset generation for specialization prediction
-│   └── data_transformers.py           # Data preprocessing utilities
-├── training/
-│   ├── __init__.py
-│   ├── train_hallucination.py         # Training script for hallucination predictor
-│   ├── train_specialization.py        # Training script for specialization predictor
-│   └── train_all.py                   # Complete training pipeline
-├── evaluation/
-│   ├── __init__.py
-│   ├── evaluate_agents.py             # Evaluation framework
-│   └── metrics.py                     # Custom evaluation metrics
-└── utils/
-    ├── __init__.py
-    ├── model_utils.py                  # Model loading/saving utilities
-    └── integration.py                  # Integration helpers for core RAG system
-```
+### 4. Adaptive Wrapper Agent
+- **Purpose**: Coordinates both predictors and makes final routing decision; provides API to use the query classifier separately
+- **Logic**: Routes to different RAG retrieval strategies (shallow/dense/hybrid/multi-step) vs direct LLM based on score thresholds
 
 ## Key Features
-
-### 🎯 Pre-Response Analysis
-- Analyzes queries **before** they reach the core LLM
-- Prevents hallucinations by routing high-risk queries to RAG
-- Optimizes performance by using direct LLM for simple queries
-
-### 🔄 Plug-and-Play Design
-- Standalone system with clean API
-- Easy integration with any RAG system
-- No dependencies on specific RAG implementations
-
 ### 🤖 Dual Question Framework
 1. **Question 1**: Will the core LLM likely hallucinate on this query?
 2. **Question 2**: Does this query need specialized domain knowledge?
 
-### 📊 Model Recommendations
-- **Hallucination Predictor**: DeBERTa-v3-base (fine-tuned)
-- **Specialization Predictor**: T5-base (fine-tuned)
-- **Alternative Models**: DistilBERT, RoBERTa options included
+### 📊 Trained Models
+- **Hallucination Predictor**: DeBERTa-v3-base regression model (trained and ready)
+- **Specialization Predictor**: DeBERTa-v3-base regression model (trained and ready)
+- **Output Format**: `PredictionResult` with `score`
 
-### 🎓 Training Pipeline
-- Automated dataset generation with domain-specific keywords
-- Transfer learning from pre-trained models
-- Comprehensive evaluation metrics
+### 🎓 Training Infrastructure
+- Multi-device support (CUDA, Apple Silicon MPS, CPU)
+- Designed to work with Kaggle environment
+- **Location**: `training\predictor-trainer-regression.ipynb`
+- Uses Comprehensive datasets from MMLU, SQuAD, AmbigQA, and domain-specific sources
 
 ## Quick Start
 
-```python
-from adaptive_agents import AdaptiveWrapper
+### Interactive CLI Testing
+```bash
+# Test individual agents
+python predict_adaptive.py "What is machine learning?"
+python predict_adaptive.py --interactive
 
-# Initialize the wrapper agent
+# Evaluate agents with datasets
+python evaluation/evaluate_single_agent.py --dataset data.json --agent hallucination
+python evaluation/evaluate_single_agent.py --dataset data.json --agent specialization
+```
+
+### Programmatic Usage
+```python
+from agents.adaptive_wrapper import AdaptiveWrapper
+
+# Initialize the wrapper agent (loads trained models automatically)
 wrapper = AdaptiveWrapper()
 
-# Analyze a query before sending to core RAG system
+# Analyze a query and get routing decision
 query = "What was the GDP of France in 2019?"
 decision = await wrapper.analyze_query(query)
-
-if decision.use_rag:
-    # Route to RAG system with context retrieval
-    response = core_rag_system.query_with_context(query)
-else:
-    # Route directly to LLM without context
-    response = core_llm.query_direct(query)
+# Access prediction results
+print(f"Hallucination Risk: {decision.hallucination_risk.score:.3f}")
+print(f"Specialization Need: {decision.specialization_need.score:.3f}")
+print(f"Strategy: {decision.strategy}")
+# Access classifier result
+classifier_decision = await wrapper.predict_query_complexity(query)
+print(f"Classifier Decision: {classifier_decision.complexity.label}")
 ```
 
-## Integration Example
+## Evaluation
 
-```python
-# Easy integration with existing RAG systems
-from adaptive_agents import AdaptiveWrapper
+The system includes comprehensive evaluation tools:
 
-class YourRAGSystem:
-    def __init__(self):
-        self.adaptive_agent = AdaptiveWrapper()
-        
-    async def process_query(self, query: str):
-        # Pre-response analysis
-        decision = await self.adaptive_agent.analyze_query(query)
-        
-        if decision.use_rag:
-            if decision.use_complex_reasoning:
-                return await self.multi_step_rag(query)
-            else:
-                return await self.single_step_rag(query)
-        else:
-            return await self.direct_llm(query)
+- **`evaluate_single_agent.py`**: Focused evaluation for individual agents
+- **`individual_model_evaluation.py`**: Comprehensive evaluation framework
+- **`test_models.py`**: Quick model testing and verification
+
+### Example Evaluation
+```bash
+# Evaluate hallucination predictor with your dataset
+python evaluation/evaluate_single_agent.py \
+    --dataset evaluation_data.json \
+    --agent hallucination \
+    --output-dir results/
+
+# Output includes:
+# - Performance metrics (MSE, MAE, R², correlation)
+# - Threshold analysis for binary classification
+# - Visualization plots (scatter, residuals, distributions)
+# - Detailed results in JSON and CSV formats
 ```
 
-This system provides intelligent query routing to optimize both accuracy and performance of RAG systems.
+This system provides intelligent query routing to optimize both accuracy and performance of RAG systems using production-ready trained models.

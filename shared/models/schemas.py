@@ -37,7 +37,6 @@ class DocumentUploadResponse(BaseModel):
 class QueryRequest(BaseModel):
     query: str
     model_name: str = "llama3.2:3b"
-    embedding_model: str = "snowflake-arctic-embed2:latest"
     max_chunks: int = 5
     similarity_threshold: float = 0.3
 

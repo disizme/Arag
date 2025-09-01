@@ -199,7 +199,7 @@ async def process_multi_fetch_query(request: QueryRequest) -> QueryResponse:
         num_steps=reasoning_result["num_steps"],
     )
 
-@router.post("/query-vanilla", response_model=QueryResponse)
+@router.post("/query-vanilla-rag", response_model=QueryResponse)
 async def query_documents(request: QueryRequest):
     """Query the document database with optional adaptive agent"""
     try:
@@ -230,7 +230,7 @@ async def query_documents(request: QueryRequest):
             "strategy": decision.complexity.label,
             "processing_time_ms": decision.processing_time_ms
         }
-        
+        print(response)
         return response
     
     except Exception as e:
@@ -261,7 +261,7 @@ async def query_documents(request: QueryRequest):
             "specialization_need": decision.specialization_need.score,
             "processing_time_ms": decision.processing_time_ms
         }
-        
+        print(response)
         return response
     
     except Exception as e:

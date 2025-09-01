@@ -13,14 +13,19 @@ class OllamaService:
             if context is None:
                 prompt = f"""Question: {query}
 
-            Please answer the question as precisely as possible. Do not include any additional information or commentary."""
+Instructions: Give a direct, concise answer to the question. Only provide explanations, reasoning, or additional details if the question specifically asks for them (e.g., "explain why", "how does", "what causes")
+
+Answer:
+"""
             else:
                 prompt = f"""Context: {context}
 
-            Question: {query}
+Question: {query}
 
-            Please answer the question based on the provided context as precisely as possible. If the context doesn't contain enough information to answer the question, say so clearly."""
-            
+Instructions: Answer the question using the provided context as your primary source, supplemented by your general knowledge when needed. Give a direct, concise answer. Only provide explanations, reasoning, or additional details if the question specifically asks for them (e.g., "explain why", "how does", "what causes").
+
+Answer:
+"""
             response = await asyncio.to_thread(
                 self.client.generate,
                 model=model_name,

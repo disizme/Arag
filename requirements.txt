@@ -6,12 +6,7 @@ pydantic-settings
 python-multipart
 aiofiles
 streamlit
-
-#Document Processing
-# Legacy libraries - kept for reference, commented out for Kreuzberg integration
-# pymupdf==1.23.8
-# python-docx==1.0.1
-# python-pptx==0.6.22
+requests
 
 # New unified document processing library
 kreuzberg
@@ -20,37 +15,28 @@ kreuzberg
 qdrant-client
 
 #NLP and ML
+pandas
+transformers
+torch
+sentence-transformers
+numpy
 spacy
 langchain
 langchain-experimental
 langchain-community
 langchain-ollama
-requests
 beautifulsoup4
 rank_bm25
-FlagEmbedding
+FlagEmbedding   #BGE-M3 Embedding Model
 
 #LLM Integration
 ollama
 
-#Adaptive Agents - HuggingFace Models (optional)
-# Install these for ML-based agents (set USE_HUGGINGFACE_AGENTS=True in config)
-# For CPU-only inference:
-transformers
-torch
-sentence-transformers
-numpy
-
-# For GPU acceleration (optional - uncomment if you have CUDA):
-# torch>=2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
-# torchvision>=0.15.0+cu118 --index-url https://download.pytorch.org/whl/cu118
-# torchaudio>=2.0.0+cu118 --index-url https://download.pytorch.org/whl/cu118
-
-# For training/testing HuggingFace models
-# Add these for dataset loading and evaluation
-
+# Dataset loading and evaluation
 datasets
 scikit-learn
 keybert
 matplotlib
 seaborn
+rouge-score
+bert-score

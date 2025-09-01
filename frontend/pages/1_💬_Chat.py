@@ -202,7 +202,7 @@ if query:
     with st.spinner("Thinking..."):
         try:
             # Query the API
-            model_to_use = selected_model if selected_model != "default" else "qwen3:latest"
+            model_to_use = selected_model if selected_model != "default" else "gemma3:1b"
             response = api_client.query_documents(
                 query=query,
                 model_name=model_to_use,

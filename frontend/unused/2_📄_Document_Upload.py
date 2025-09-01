@@ -31,27 +31,27 @@ api_client = get_api_client()
 with st.sidebar:
     st.header("Upload Settings")
     
-    chunking_method = st.selectbox(
-        "Chunking Method",
-        ["recursive", "spacy", "langchain"],
-        help="Choose the method for text chunking"
-    )
+    #chunking_method = st.selectbox(
+    #    "Chunking Method",
+    #    ["recursive", "spacy", "langchain"],
+    #    help="Choose the method for text chunking"
+    #)
     
     # Embedding model selection
-    try:
-        models = api_client.get_available_models()
-        embedding_models = [model for model in models if 'embed' in model.lower()]
-        if not embedding_models:
-            embedding_models = models  # Fallback to all models
+    #try:
+    #    models = api_client.get_available_models()
+    #    embedding_models = [model for model in models if 'embed' in model.lower()]
+    #    if not embedding_models:
+    #        embedding_models = models  # Fallback to all models
         
-        selected_embedding_model = st.selectbox(
-            "Embedding Model",
-            embedding_models,
-            help="Choose the model for generating embeddings"
-        )
-    except Exception as e:
-        st.error(f"Failed to load models: {str(e)}")
-        selected_embedding_model = "snowflake-arctic-embed2:latest"
+    #    selected_embedding_model = st.selectbox(
+    #        "Embedding Model",
+    #        embedding_models,
+    #        help="Choose the model for generating embeddings"
+    #    )
+    #except Exception as e:
+    #    st.error(f"Failed to load models: {str(e)}")
+    #    selected_embedding_model = "snowflake-arctic-embed2:latest"
     
     st.divider()
     
@@ -105,8 +105,7 @@ with col1:
                 result = api_client.upload_document(
                     file_content, 
                     uploaded_file.name, 
-                    chunking_method,
-                    selected_embedding_model
+                    "recursive"
                 )
                 st.success(f"✅ {uploaded_file.name} upload started")
                 st.json(result)

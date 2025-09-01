@@ -7,7 +7,7 @@ class APIClient:
     def __init__(self, base_url: str = "http://localhost:8000/api/v1"):
         self.base_url = base_url
     
-    def query_documents(self, query: str, model_name: str = "llama3.2:3b", embedding_model: str = "snowflake-arctic-embed2:latest", max_chunks: int = 5, similarity_threshold: float = 0.3, agent_type: str = "adaptive-rag") -> Dict[str, Any]:
+    def query_documents(self, query: str, model_name: str = "gemma3:1b", max_chunks: int = 5, similarity_threshold: float = 0.3, agent_type: str = "adaptive-rag") -> Dict[str, Any]:
         """Query the document database"""
         try:
             data = {
@@ -15,7 +15,6 @@ class APIClient:
                 "model_name": model_name,
                 "max_chunks": max_chunks,
                 "similarity_threshold": similarity_threshold,
-                "embedding_model": embedding_model
             }
             api_route = f"{self.base_url}/query-{agent_type}"
             response = requests.post(
